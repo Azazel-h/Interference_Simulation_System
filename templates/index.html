@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+{% block content %}
+    <div class="container">
+    <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        {% if graph %}
+                            {{ graph|safe }}
+                            {% else %}
+                            <p>No graph was provided.</p>
+                        {% endif %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <input type="submit" value="Submit">
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <script type="text/javascript">
+    $(document).on('submit','#task-form',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "index" %}',
+            data:
+            {
+                task:$("#task").val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+            },
+            })
+        });
+    </script>
+{% endblock %}
