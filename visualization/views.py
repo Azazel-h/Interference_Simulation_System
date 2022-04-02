@@ -27,7 +27,7 @@ def index_page(request) -> render:
     else:
         form = GraphForm()
     context['form'] = form
-    
+
     return render(request, 'index.html', context=context)
 
 def get_graph(DLABDA, NMEDIUM, labda, size, N, D, R, f, k):
