@@ -11,13 +11,13 @@ def index_page(request) -> render:
         if form.is_valid():
             labda = form.cleaned_data['labda'] * nm
             size = form.cleaned_data['size'] * mm
-            N = form.cleaned_data['N']
 
+            N = form.cleaned_data['N']
             f = form.cleaned_data['f'] * mm
             k = form.cleaned_data['k'] * math.pi / labda
-
             D = form.cleaned_data['D']
             R = form.cleaned_data['R']
+
             DLABDA = form.cleaned_data['DLABDA'] / nm
             NMEDIUM = form.cleaned_data['NMEDIUM']
 
