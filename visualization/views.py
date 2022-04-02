@@ -10,19 +10,20 @@ def index_page(request) -> render:
     if request.method == 'POST':
         form = GraphForm(request.POST)
         if form.is_valid():
-            labda = form.cleaned_data['labda'] * nm
-            size = form.cleaned_data['size'] * mm
+            picture_size = form.cleaned_data['picture_size'] * mm
+            focal_distance = form.cleaned_data['focal_distance'] * mm
+            glasses_distance = form.cleaned_data['glasses_distance'] * mm
+            wave_length = form.cleaned_data['wave_length'] * nm
+            stroke_difference = form.cleaned_data['stroke_difference'] * nm
+            reflectivity = form.cleaned_data['reflectivity']
 
             N = form.cleaned_data['N']
-            f = form.cleaned_data['f'] * mm
-            k = form.cleaned_data['k'] * math.pi / labda
-            D = form.cleaned_data['D'] * mm
-            R = form.cleaned_data['R']
-
-            DLABDA = form.cleaned_data['DLABDA'] * nm
             NMEDIUM = form.cleaned_data['NMEDIUM']
 
-            graph = get_graph(DLABDA, NMEDIUM, labda, size, N, D, R, f, k)
+            k = 2 * math.pi / wave_length
+
+            graph = get_graph(stroke_difference, NMEDIUM, wave_length, picture_size,
+                              N, glasses_distance, reflectivity, focal_distance, k)
             context['graph'] = graph
     else:
         form = GraphForm()
@@ -30,29 +31,31 @@ def index_page(request) -> render:
 
     return render(request, 'index.html', context=context)
 
-def get_graph(DLABDA, NMEDIUM, labda, size, N, D, R, f, k):
-    k2 = 2 * math.pi / (labda + DLABDA)
-    Fin = 4.0 * R / (1.0 - R)
-    F = Begin(size, labda, N)
+def get_graph(stroke_difference, NMEDIUM, wave_length, picture_size, N, glasses_distance, reflectivity, focal_distance, k):
+    second_k = 2 * math.pi / (wave_length + stroke_difference)
+    fineness = 4.0 * reflectivity / (1.0 - reflectivity)
 
+    F = Begin(picture_size, wave_length, N)
     I = Intensity(F, 1)
-    step = size / N / mm
-    for i in range(1, N):
-        xray = i * step
-        for j in range(1, N):
-            yray = j * step
 
-            X = xray * mm - size / 2
-            Y = yray * mm - size / 2
+    step = picture_size / N / mm
+    for i in range(1, N):
+        x_ray = i * step
+        for j in range(1, N):
+            y_ray = j * step
+
+            X = x_ray * mm - picture_size / 2
+            Y = y_ray * mm - picture_size / 2
 
             radius = math.sqrt(X * X + Y * Y)
-            theta = radius / f
+            theta = radius / focal_distance
 
-            delta2 = k * NMEDIUM * D * math.cos(theta)
-            Inten = 0.5 / (1 + Fin * math.pow(math.sin(delta2), 2))
-            delta2 = k2 * NMEDIUM * D * math.cos(theta)
+            delta = k * NMEDIUM * glasses_distance * math.cos(theta)
+            Inten = 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
 
-            I[i][j] = (Inten + 0.5 / (1 + Fin * math.pow(math.sin(delta2), 2)))
+            delta = second_k * NMEDIUM * glasses_distance * math.cos(theta)
+            I[i][j] = (Inten + 0.5 / (1 + fineness * math.pow(math.sin(delta), 2)))
+
     fig = px.imshow(I)
     graph = fig.to_html(full_html=False)
 
