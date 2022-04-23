@@ -13,13 +13,17 @@ def index_page(request) -> render:
             picture_size = form.cleaned_data['picture_size'] * mm
             focal_distance = form.cleaned_data['focal_distance'] * mm
             glasses_distance = form.cleaned_data['glasses_distance'] * mm
-            wave_length = form.cleaned_data['wave_length'] * nm
             stroke_difference = form.cleaned_data['stroke_difference'] * nm
             reflectivity = form.cleaned_data['reflectivity']
             color = form.cleaned_data['laser_color']
 
+            if color == 'g':
+                wave_length = 532 * nm
+            else:
+                wave_length = 630 * nm
+
             N = form.cleaned_data['N']
-            NMEDIUM = form.cleaned_data['NMEDIUM']
+            NMEDIUM = 1
 
             k = 2 * math.pi / wave_length
 
@@ -52,10 +56,10 @@ def get_graph(stroke_difference, NMEDIUM, wave_length, picture_size, N,
             theta = radius / focal_distance
 
             delta = k * NMEDIUM * glasses_distance * math.cos(theta)
-            Inten = 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
+            Intensivity = 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
 
             delta = second_k * NMEDIUM * glasses_distance * math.cos(theta)
-            I[i][j] = (Inten + 0.5 / (1 + fineness * math.pow(math.sin(delta), 2)))
+            I[i][j] = (Intensivity + 0.5 / (1 + fineness * math.pow(math.sin(delta), 2)))
 
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #              (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
