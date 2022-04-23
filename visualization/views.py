@@ -15,6 +15,7 @@ def index_page(request) -> render:
             glasses_distance = form.cleaned_data['glasses_distance'] * mm
             stroke_difference = form.cleaned_data['stroke_difference'] * nm
             reflectivity = form.cleaned_data['reflectivity']
+            refractive_index = form.cleaned_data['refractive_index']
             color = form.cleaned_data['laser_color']
 
             if color == 'g':
@@ -23,11 +24,10 @@ def index_page(request) -> render:
                 wave_length = 630 * nm
 
             N = form.cleaned_data['N']
-            NMEDIUM = 1
 
             k = 2 * math.pi / wave_length
 
-            graph = get_graph(stroke_difference, NMEDIUM, wave_length, picture_size,
+            graph = get_graph(stroke_difference, refractive_index, wave_length, picture_size,
                               N, glasses_distance, reflectivity, focal_distance, k, color)
             context['graph'] = graph
     else:
@@ -35,7 +35,8 @@ def index_page(request) -> render:
     context['form'] = form
     return render(request, 'index.html', context=context)
 
-def get_graph(stroke_difference, NMEDIUM, wave_length, picture_size, N,
+
+def get_graph(stroke_difference, refractive_index, wave_length, picture_size, N,
               glasses_distance, reflectivity, focal_distance, k, laser_color):
     second_k = 2 * math.pi / (wave_length + stroke_difference)
     fineness = 4.0 * reflectivity / (1.0 - reflectivity)
@@ -55,15 +56,15 @@ def get_graph(stroke_difference, NMEDIUM, wave_length, picture_size, N,
             radius = math.sqrt(X * X + Y * Y)
             theta = radius / focal_distance
 
-            delta = k * NMEDIUM * glasses_distance * math.cos(theta)
-            Intensivity = 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
+            delta = 2 * k * refractive_index * glasses_distance * math.cos(theta)
+            Intensivity = 1 / (1 + fineness * math.pow(math.sin(delta / 2), 2))
 
-            delta = second_k * NMEDIUM * glasses_distance * math.cos(theta)
-            I[i][j] = (Intensivity + 0.5 / (1 + fineness * math.pow(math.sin(delta), 2)))
+            delta = 2 * second_k * refractive_index * glasses_distance * math.cos(theta)
+            I[i][j] = (Intensivity + 1 / (1 + fineness * math.pow(math.sin(delta / 2), 2)))
 
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #              (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
-    config = {'scrollZoom': True, 'toImageButtonOptions': { 'height': None, 'width': None}}
+    config = {'scrollZoom': True, 'toImageButtonOptions': {'height': None, 'width': None}}
     if laser_color == 'g':
         fig = px.imshow(I, color_continuous_scale=[(0, '#013b00'), (1, 'lime')])
     else:
