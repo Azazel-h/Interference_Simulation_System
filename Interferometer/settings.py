@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'visualization',
-    'crispy_forms'
+    'crispy_forms',
+    'django_cas_ng'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -52,7 +53,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_cas_ng.middleware.CASMiddleware'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend'
+)
 
 ROOT_URLCONF = 'Interferometer.urls'
 
@@ -106,6 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CAS_SERVER_URL = 'https://proxy.bmstu.ru:8443/cas/'
+CAS_VERSION = '3'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

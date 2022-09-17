@@ -18,10 +18,10 @@
         <ul class="navbar-nav me-auto">
             {% block main_tab %}<li class="nav-item"><a class="nav-link" href="/"> Главная </a></li>{% endblock %}
             {% if user.is_authenticated %}
-                {% block account_tab %}<li class="nav-item"><a class="nav-link" href="{% url 'account' %}"> {{ user.username }} </a></li>{% endblock %}
-                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}?next=/"> Выйти </a></li>
+                {% block account_tab %}<li class="nav-item"><a class="nav-link" href="/"> {{ user.username }} </a></li>{% endblock %}
+                <li class="nav-item"><a class="nav-link" href="/accounts/logout"> Выйти </a></li>
             {% else %}
-                {% block login_tab %}<li class="nav-item"><a class="nav-link disabled" href="{% url 'login' %}"> Войти </a></li>{% endblock %}
+                {% block login_tab %}<li class="nav-item"><a class="nav-link" href="/accounts/login"> Войти </a></li>{% endblock %}
             {% endif %}
         </ul>
     </div>
