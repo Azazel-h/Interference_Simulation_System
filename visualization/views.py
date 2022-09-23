@@ -70,6 +70,6 @@ def get_graph(stroke_difference, refractive_index, wave_length, picture_size, N,
     else:
         fig = px.imshow(I, color_continuous_scale=[(0, '#3b0000'), (1, 'red')])
 
-    print(px.colors.sequential.Inferno)
+    # print(px.colors.sequential.Inferno)
     graph = fig.to_html(full_html=False, config=config)
     return graph
