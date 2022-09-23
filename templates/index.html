@@ -10,14 +10,6 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row align-items-center">
-                                <div class="col-6 col-md-4">
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                        {{ form | crispy }}
-                                        <br>
-                                        <input type="submit" value="Посмотреть кольца" class="btn btn-success">
-                                    </form>
-                                </div>
                                 <div class="col-md-8">
                                     {% if graph %}
                                         {{ graph|safe }}
@@ -26,6 +18,14 @@
                                             <p>Предоставьте требуемые данные в указанную форму.</p>
                                         </div>
                                     {% endif %}
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        {{ form | crispy }}
+                                        <br>
+                                        <input type="submit" value="Посмотреть кольца" class="btn btn-success">
+                                    </form>
                                 </div>
                             </div>
                         </div>
