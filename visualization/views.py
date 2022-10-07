@@ -16,7 +16,7 @@ def index_page(request) -> render:
             stroke_difference = form.cleaned_data['stroke_difference'] * nm
             reflectivity = form.cleaned_data['reflectivity']
             refractive_index = form.cleaned_data['refractive_index']
-            # incident_light_intensity = form.cleaned_data['incident_light_intensity']
+            incident_light_intensity = form.cleaned_data['incident_light_intensity'] * W / cm / cm
             color = form.cleaned_data['laser_color']
 
             if color == 'g':
@@ -25,7 +25,7 @@ def index_page(request) -> render:
                 wave_length = 630 * nm
 
             N = form.cleaned_data['N']
-            incident_light_intensity = 10
+            # incident_light_intensity = 10
 
             graph = get_graph(stroke_difference, refractive_index, wave_length, picture_size,
                               N, glasses_distance, reflectivity, focal_distance, incident_light_intensity, color)
@@ -41,6 +41,10 @@ def get_graph(stroke_difference, refractive_index, wave_length, picture_size, N,
     F = Begin(picture_size, wave_length, N)
     I = Intensity(F, 1)
 
+    k = 2 * math.pi / wave_length
+    second_k = 2 * math.pi / (wave_length + stroke_difference)
+    fineness = 4.0 * reflectivity / math.pow(1.0 - reflectivity, 2)
+
     step = picture_size / N / mm
     for i in range(1, N):
         x_ray = i * step
@@ -52,10 +56,12 @@ def get_graph(stroke_difference, refractive_index, wave_length, picture_size, N,
 
             radius = math.sqrt(X * X + Y * Y)
             theta = radius / focal_distance
-            delta = 4 * math.pi * refractive_index * glasses_distance / wave_length * math.cos(theta)
 
-            Intensivity = incident_light_intensity / (
-                        1 + 4 * reflectivity / ((1 - reflectivity) ** 2) * (math.sin(delta / 2)) ** 2)
+            delta = 2 * k * refractive_index * glasses_distance * math.cos(theta)
+            Intensivity = incident_light_intensity / (1 + fineness * math.pow(math.sin(delta / 2), 2))
+            delta = 2 * second_k * refractive_index * glasses_distance * math.cos(theta)
+            Intensivity += incident_light_intensity / (1 + fineness * math.pow(math.sin(delta / 2), 2))
+
             I[i][j] = Intensivity
 
 
