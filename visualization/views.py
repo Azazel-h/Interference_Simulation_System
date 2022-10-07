@@ -25,10 +25,10 @@ def index_page(request) -> render:
 
             N = form.cleaned_data['N']
 
-            k = 2 * math.pi / wave_length
+            incident_light_intensity = 10
 
             graph = get_graph(stroke_difference, refractive_index, wave_length, picture_size,
-                              N, glasses_distance, reflectivity, focal_distance, k, color)
+                              N, glasses_distance, reflectivity, focal_distance, incident_light_intensity, color)
             context['graph'] = graph
     else:
         form = GraphForm()
@@ -37,10 +37,10 @@ def index_page(request) -> render:
 
 
 def get_graph(stroke_difference, refractive_index, wave_length, picture_size, N,
-              glasses_distance, reflectivity, focal_distance, k, laser_color):
-    second_k = 2 * math.pi / (wave_length + stroke_difference)
-    fineness = 4.0 * reflectivity / (1.0 - reflectivity)
-
+              glasses_distance, reflectivity, focal_distance, incident_light_intensity, laser_color):
+    # second_k = 2 * math.pi / (wave_length + stroke_difference)
+    # fineness = 4.0 * reflectivity / (1.0 - reflectivity)
+    #
     F = Begin(picture_size, wave_length, N)
     I = Intensity(F, 1)
 
@@ -55,12 +55,12 @@ def get_graph(stroke_difference, refractive_index, wave_length, picture_size, N,
 
             radius = math.sqrt(X * X + Y * Y)
             theta = radius / focal_distance
+            delta = 4 * math.pi * refractive_index * glasses_distance / wave_length * math.cos(theta)
 
-            delta = 2 * k * refractive_index * glasses_distance * math.cos(theta)
-            Intensivity = 1 / (1 + fineness * math.pow(math.sin(delta / 2), 2))
+            Intensivity = incident_light_intensity / (
+                        1 + 4 * reflectivity / ((1 - reflectivity) ** 2) * (math.sin(delta / 2)) ** 2)
+            I[i][j] = Intensivity
 
-            delta = 2 * second_k * refractive_index * glasses_distance * math.cos(theta)
-            I[i][j] = (Intensivity + 1 / (1 + fineness * math.pow(math.sin(delta / 2), 2)))
 
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #              (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
