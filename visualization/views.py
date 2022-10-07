@@ -16,6 +16,7 @@ def index_page(request) -> render:
             stroke_difference = form.cleaned_data['stroke_difference'] * nm
             reflectivity = form.cleaned_data['reflectivity']
             refractive_index = form.cleaned_data['refractive_index']
+            incident_light_intensity = form.cleaned_data['incident_light_intensity']
             color = form.cleaned_data['laser_color']
 
             if color == 'g':
@@ -24,8 +25,6 @@ def index_page(request) -> render:
                 wave_length = 630 * nm
 
             N = form.cleaned_data['N']
-
-            incident_light_intensity = 10
 
             graph = get_graph(stroke_difference, refractive_index, wave_length, picture_size,
                               N, glasses_distance, reflectivity, focal_distance, incident_light_intensity, color)
