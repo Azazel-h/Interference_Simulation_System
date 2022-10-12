@@ -1,7 +1,9 @@
-from django.shortcuts import render
+import math
+
 import plotly.express as px
 from LightPipes import *
-import math
+from django.shortcuts import render
+
 from .forms import GraphForm
 
 
@@ -24,11 +26,11 @@ def index_page(request) -> render:
             else:
                 wave_length = 630 * nm
 
-            N = form.cleaned_data['N']
+            n = form.cleaned_data['N']
             # incident_light_intensity = 10
 
             graph = get_graph(stroke_difference, refractive_index, wave_length, picture_size,
-                              N, glasses_distance, reflectivity, focal_distance, incident_light_intensity, color)
+                              n, glasses_distance, reflectivity, focal_distance, incident_light_intensity, color)
             context['graph'] = graph
     else:
         form = GraphForm()
@@ -36,42 +38,41 @@ def index_page(request) -> render:
     return render(request, 'index.html', context=context)
 
 
-def get_graph(stroke_difference, refractive_index, wave_length, picture_size, N,
+def get_graph(stroke_difference, refractive_index, wave_length, picture_size, n,
               glasses_distance, reflectivity, focal_distance, incident_light_intensity, laser_color):
-    F = Begin(picture_size, wave_length, N)
-    I = Intensity(F, 1)
+    f = Begin(picture_size, wave_length, n)
+    intensity = Intensity(f, 1)
 
     k = 2 * math.pi / wave_length
     second_k = 2 * math.pi / (wave_length + stroke_difference)
     fineness = 4.0 * reflectivity / math.pow(1.0 - reflectivity, 2)
 
-    step = picture_size / N / mm
-    for i in range(1, N):
+    step = picture_size / n / mm
+    for i in range(1, n):
         x_ray = i * step
-        for j in range(1, N):
+        for j in range(1, n):
             y_ray = j * step
 
-            X = x_ray * mm - picture_size / 2
-            Y = y_ray * mm - picture_size / 2
+            x = x_ray * mm - picture_size / 2
+            y = y_ray * mm - picture_size / 2
 
-            radius = math.sqrt(X * X + Y * Y)
+            radius = math.sqrt(x * x + y * y)
             theta = radius / focal_distance
 
             delta = 2 * k * refractive_index * glasses_distance * math.cos(theta)
-            Intensivity = incident_light_intensity / (1 + fineness * math.pow(math.sin(delta / 2), 2))
+            light_intensity = incident_light_intensity / (1 + fineness * math.pow(math.sin(delta / 2), 2))
             delta = 2 * second_k * refractive_index * glasses_distance * math.cos(theta)
-            Intensivity += incident_light_intensity / (1 + fineness * math.pow(math.sin(delta / 2), 2))
+            light_intensity += incident_light_intensity / (1 + fineness * math.pow(math.sin(delta / 2), 2))
 
-            I[i][j] = Intensivity
-
+            intensity[i][j] = light_intensity
 
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
-    #              (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
+    #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
     config = {'scrollZoom': True, 'toImageButtonOptions': {'height': None, 'width': None}}
     if laser_color == 'g':
-        fig = px.imshow(I, color_continuous_scale=[(0, '#013b00'), (1, 'lime')])
+        fig = px.imshow(intensity, color_continuous_scale=['#013b00', 'lime'])
     else:
-        fig = px.imshow(I, color_continuous_scale=[(0, '#3b0000'), (1, 'red')])
+        fig = px.imshow(intensity, color_continuous_scale=['#3b0000', 'red'])
 
     # print(px.colors.sequential.Inferno)
     graph = fig.to_html(full_html=False, config=config)
