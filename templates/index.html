@@ -1,49 +1,53 @@
 {% extends "base.html" %}
 
-{% block title %}Главная{% endblock %}
-{% block main_tab %}<li class="nav-item"><a class="nav-link active" href="/">Главная</a></li>{% endblock %}
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block main_tab %}
+    <li class="nav-item">
+        <a class="nav-link active" href="/">Главная</a>
+    </li>
+{% endblock %}
+
 {% block content %}
+    {% load crispy_forms_filters %}
     {% load crispy_forms_tags %}
-    <div class="container pt-5">
-        <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    {% if graph %}
-                                        {{ graph|safe }}
-                                        {% else %}
-                                        <div class="alert alert-secondary" role="alert">
-                                            <p>Предоставьте требуемые данные в указанную форму.</p>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-6 col-md-4">
-                                    <form method="POST">
-                                        {% csrf_token %}
-                                        {{ form | crispy }}
-                                        <br>
-                                        <input type="submit" value="Посмотреть кольца" class="btn btn-success">
-                                    </form>
-                                </div>
-                            </div>
+
+    <div class="container pt-5 pb-5">
+        <div class="card card-body">
+            <div class="row align-items-center">
+                <div class="col-md-7">
+                    {% if graph %}
+                        {{ graph | safe }}
+                    {% else %}
+                        <div class="alert alert-secondary text-center" role="alert">
+                            <p>Предоставьте требуемые данные в указанную форму.</p>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
+                <div class="col-md-5">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                        <br>
+                        <input type="submit" value="Посмотреть кольца" class="btn btn-success">
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+
     <script type="text/javascript">
-    $(document).on('submit','#task-form',function(e){
-        e.preventDefault();
-        $.ajax({
-            type:'POST',
-            url:'{% url "index" %}',
-            data:
-            {
-                task:$("#task").val(),
-                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
-            },
+        $(document).on('submit','#task-form',function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '{% url "index" %}',
+                data: {
+                    task:$("#task").val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
             })
         });
     </script>
