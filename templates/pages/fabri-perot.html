@@ -4,11 +4,14 @@
     Главная
 {% endblock %}
 
-{% block main_tab %}
-    <li class="nav-item">
-        <a class="nav-link active" href="/static">Главная</a>
-    </li>
-{% endblock %}
+
+<div class="col-4 btn-group" role="group" aria-label="Basic radio toggle button group">
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+  <label class="btn btn-outline-dark" for="btnradio1">История запросов</label>
+
+  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+  <label class="btn btn-outline-dark" for="btnradio2">Сохраненные данные</label>
+</div>
 
 {% block content %}
     {% load crispy_forms_filters %}
@@ -101,4 +104,14 @@
             document.getElementById("id_N").value = document.getElementById("n-" + num).innerText;
         }
     </script>
+{% endblock %}
+
+{% if user.is_authenticated %}
+    <input type="submit" value="Сохранить данные" class="btn btn-success" name="save">
+{% else %}
+    <input type="submit" value="Сохранить данные" class="btn btn-success" name="save" disabled>
+{% endif %}
+
+{% block scripts %}
+    <script src="{% static 'js/autoFill.js' %}" type="text/javascript"></script>
 {% endblock %}
