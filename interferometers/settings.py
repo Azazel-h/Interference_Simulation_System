@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'visualization',
+    'fpi',
     'crispy_forms',
     'django_cas_ng'
 ]
@@ -51,13 +51,15 @@ AUTHENTICATION_BACKENDS = (
     'django_cas_ng.backends.CASBackend'
 )
 
-ROOT_URLCONF = 'Interferometer.urls'
+ROOT_URLCONF = 'interferometers.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'interferometers/templates'),
+            os.path.join(BASE_DIR, 'fpi/templates'),
             os.path.join(BASE_DIR, 'michelson/templates'),
         ],
         'APP_DIRS': True,
@@ -72,7 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Interferometer.wsgi.application'
+WSGI_APPLICATION = 'interferometers.wsgi.application'
 
 
 # Database
@@ -123,6 +125,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
