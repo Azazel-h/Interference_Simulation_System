@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}Интерферометр Майкельсона{% endblock %}
+
 {% block main_tab %}
-    <li class="nav-item"><a class="nav-link active" href="/">Главная</a></li>{% endblock %}
+    <li class="nav-item"><a class="nav-link active" href="/">Интерферометр Майкельсона</a></li>
+{% endblock %}
+
 {% block content %}
     {% load crispy_forms_tags %}
     <div class="container pt-5">
@@ -12,6 +15,7 @@
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-md-8">
+
                                 {% if graph %}
                                     {{ graph|safe }}
                                 {% else %}
@@ -19,6 +23,7 @@
                                         <p>Предоставьте требуемые данные в указанную форму.</p>
                                     </div>
                                 {% endif %}
+
                             </div>
                             <div class="col-6 col-md-4">
                                 <form method="POST">
