@@ -6,9 +6,6 @@ import math
 from django import forms
 
 
-# def index(request):
-#     return render(request, 'michelson/index.html')
-
 def index(request) -> render:
     context = {}
     if request.method == 'POST':
