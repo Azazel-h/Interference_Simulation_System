@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Интерферометр Майкельсона
+{% endblock %}
+
+{% block content %}
+    {% include 'components/interferometer-interface.html' %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/updateWithoutReload.js' %}" type="text/javascript"></script>
+{% endblock %}
