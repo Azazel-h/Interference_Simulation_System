@@ -2,14 +2,13 @@
 {% load static %}
 
 {% block title %}
-    Интерферометр Фабри-Перо
+    Интерферометр Майкельсона
 {% endblock %}
 
 {% block content %}
     {% include 'components/interferometer-interface.html' %}
-    {% include 'components/history-table.html' %}
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'js/autoFill.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/updateWithoutReload.js' %}" type="text/javascript"></script>
 {% endblock %}
