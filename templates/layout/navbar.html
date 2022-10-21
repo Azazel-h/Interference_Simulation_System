@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark container-md">
+    <a class="navbar-brand" href="/">FPI laboratory</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+            {% block main_tab %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        Интерферометр Фабри-Перо
+                    </a>
+                </li>
+            {% endblock %}
+            <li class="nav-item">
+                <a class="nav-link" href="/michelson">
+                    Интерферометр Майкельсона
+                </a>
+            </li>
+
+            {% if user.is_authenticated %}
+                {% block account_tab %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            {{ user.username }}
+                        </a>
+                    </li>
+                {% endblock %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/accounts/logout">
+                        Выйти
+                    </a>
+                </li>
+            {% else %}
+                {% block login_tab %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/accounts/login"> Войти </a>
+                    </li>
+                {% endblock %}
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
