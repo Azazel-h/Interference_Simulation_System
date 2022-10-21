@@ -3,6 +3,7 @@ import math
 import plotly.express as px
 from LightPipes import *
 from django.shortcuts import render
+from .models import RequestFP
 
 from .forms import GraphForm
 
@@ -20,13 +21,24 @@ def index_page(request) -> render:
             refractive_index = form.cleaned_data['refractive_index']
             incident_light_intensity = form.cleaned_data['incident_light_intensity'] * W / cm / cm
             color = form.cleaned_data['laser_color']
+            n = form.cleaned_data['N']
+
+            RequestFP.objects.create(user=request.user.username,
+                                     laser_color=form.cleaned_data['laser_color'],
+                                     glasses_distance=form.cleaned_data['glasses_distance'],
+                                     focal_distance=form.cleaned_data['focal_distance'],
+                                     stroke_difference=form.cleaned_data['stroke_difference'],
+                                     reflectivity=form.cleaned_data['reflectivity'],
+                                     refractive_index=form.cleaned_data['refractive_index'],
+                                     picture_size=form.cleaned_data['picture_size'],
+                                     incident_light_intensity=form.cleaned_data['incident_light_intensity'],
+                                     N=form.cleaned_data['N'])
 
             if color == 'g':
                 wave_length = 532 * nm
             else:
                 wave_length = 630 * nm
 
-            n = form.cleaned_data['N']
             # incident_light_intensity = 10
 
             graph = get_graph(stroke_difference, refractive_index, wave_length, picture_size,
@@ -34,6 +46,9 @@ def index_page(request) -> render:
             context['graph'] = graph
     else:
         form = GraphForm()
+
+    user_requests = RequestFP.objects.filter(user=request.user.username)[::-1]
+    context['array_of_reqs'] = user_requests[:5]
     context['form'] = form
     return render(request, 'index.html', context=context)
 
