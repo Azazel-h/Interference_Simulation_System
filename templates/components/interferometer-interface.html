@@ -18,7 +18,8 @@
                     {% csrf_token %}
                     {{ form | crispy }}
                     <br>
-                    <input type="submit" value="Посмотреть кольца" class="btn btn-success">
+                    <input type="submit" value="Посмотреть кольца" class="btn btn-success" name="send">
+                    <input type="submit" value="Сохранить данные" class="btn btn-success" name="save">
                 </form>
             </div>
         </div>

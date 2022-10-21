@@ -47,7 +47,8 @@ def index_page(request) -> render:
                 context['graph'] = graph
 
             elif 'save' in request.POST:
-                presets = PresetFP.objects.filter(user=request.user.username)
+                presets = PresetFP.objects.filter(user=request.user.username)[::-1]
+                presets = presets[:5]
                 if request.user.username and presets.count() < 5:
                     PresetFP.objects.create(user=request.user.username,
                                             laser_color=form.cleaned_data['laser_color'],
