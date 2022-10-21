@@ -50,7 +50,7 @@ def index_page(request) -> render:
     user_requests = RequestFP.objects.filter(user=request.user.username)[::-1]
     context['array_of_reqs'] = user_requests[:5]
     context['form'] = form
-    return render(request, 'fpi.html', context=context)
+    return render(request, 'index.html', context=context)
 
 
 def get_graph(stroke_difference, refractive_index, wave_length, picture_size, n,
