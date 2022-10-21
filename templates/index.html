@@ -31,12 +31,27 @@
                         {% csrf_token %}
                         {{ form | crispy }}
                         <br>
-                        <input type="submit" value="Посмотреть кольца" class="btn btn-success">
+                        <input type="submit" value="Посмотреть кольца" class="btn btn-success" name="send">
+                        {% if user.is_authenticated %}
+                            <input type="submit" value="Сохранить данные" class="btn btn-success" name="save">
+                        {% else %}
+                            <input type="submit" value="Сохранить данные" class="btn btn-success" name="save" disabled>
+                        {% endif %}
                     </form>
                 </div>
             </div>
             <br>
-            <table class="table">
+
+            <div class="col-4 btn-group" role="group" aria-label="Basic radio toggle button group">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+              <label class="btn btn-outline-dark" for="btnradio1">История запросов</label>
+
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+              <label class="btn btn-outline-dark" for="btnradio2">Сохраненные данные</label>
+            </div>
+
+            <br>
+            <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">#</th>
