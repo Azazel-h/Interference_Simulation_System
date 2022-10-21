@@ -66,7 +66,7 @@ def index_page(request) -> render:
     context['presets'] = presets
     context['array_of_reqs'] = user_requests[:5]
     context['form'] = form
-    return render(request, 'index.html', context=context)
+    return render(request, 'pages/fabri-perot.html', context=context)
 
 
 def get_graph(stroke_difference, refractive_index, wave_length, picture_size, n,

@@ -7,7 +7,7 @@ from django import forms
 
 
 # def index(request):
-#     return render(request, 'michelson/index.html')
+#     return render(request, 'michelson/fabri-perot.html')
 
 def index(request) -> render:
     context = {}
