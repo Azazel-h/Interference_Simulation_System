@@ -35,7 +35,7 @@ def index_page(request) -> render:
     else:
         form = GraphForm()
     context['form'] = form
-    return render(request, 'index.html', context=context)
+    return render(request, 'pages/fabri-perot.html', context=context)
 
 
 def get_graph(stroke_difference, refractive_index, wave_length, picture_size, n,
