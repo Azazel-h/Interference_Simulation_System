@@ -7,7 +7,7 @@ from django import forms
 
 
 # def index(request):
-#     return render(request, 'michelson/fabri-perot.html')
+#     return render(request, 'michelson/index.html')
 
 def index(request) -> render:
     context = {}
@@ -32,7 +32,7 @@ def index(request) -> render:
         else:
             form = GraphForm()
         context['form'] = form
-    return render(request, 'michelson/../templates/pages/michelson.html', context=context)
+    return render(request, 'michelson/index.html', context=context)
 
 
 def get_graph(wavelength, R, z1, z2, z3, z4, Rbs, tx, ty, f, size, N):
