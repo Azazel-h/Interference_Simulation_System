@@ -1,51 +1,50 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark container-md">
-    <a class="navbar-brand" href="/">
-        FPI laboratory
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+{% load static %}
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto d-flex justify-content-end flex-grow-1">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-md">
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'img/bmstu.webp' %}" alt="Logo" width="40" height="40">
+        </a>
 
-            <li class="nav-item">
-                <a class="nav-link" href="/">
-                    Интерферометр Фабри-Перо
-                </a>
-            </li>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <li class="nav-item">
-                <a class="nav-link" href="/michelson">
-                    Интерферометр Майкельсона
-                </a>
-            </li>
-
-            {% if user.is_authenticated %}
-
-                {% block account_tab %}
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% block main_tab %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            {{ user.username }}
+                        <a class="nav-link active" href="/">
+                            Главная
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/fabry-perot">
+                            Фабри-Перо
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/michelson">
+                            Майкельсон
                         </a>
                     </li>
                 {% endblock %}
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/accounts/logout"> Выйти </a>
-                </li>
-
-            {% else %}
-
-                {% block login_tab %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/accounts/login"> Войти </a>
-                    </li>
-                {% endblock %}
-
-            {% endif %}
-
-        </ul>
+            </ul>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    {% block account_tab %}
+                        <li class="nav-item">
+                            <span class="navbar-text">{{ user.username }}</span>
+                            <a class="d-inline nav-link" href="/accounts/logout"> Выйти </a>
+                        </li>
+                    {% endblock %}
+                {% else %}
+                    {% block login_tab %}
+                        <li class="nav-item"><a class="nav-link" href="/accounts/login"> Войти </a></li>
+                    {% endblock %}
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </nav>

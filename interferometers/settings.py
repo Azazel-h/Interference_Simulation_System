@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 from secret_key_generator import secret_key_generator
@@ -28,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'visualization',
+    'fabry_perot',
     'crispy_forms',
     'django_cas_ng'
 ]
@@ -51,14 +50,13 @@ AUTHENTICATION_BACKENDS = (
     'django_cas_ng.backends.CASBackend'
 )
 
-ROOT_URLCONF = 'Interferometer.urls'
+ROOT_URLCONF = 'interferometers.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
-            os.path.join(BASE_DIR, 'michelson/templates'),
+            BASE_DIR / 'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -72,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Interferometer.wsgi.application'
+WSGI_APPLICATION = 'interferometers.wsgi.application'
 
 
 # Database

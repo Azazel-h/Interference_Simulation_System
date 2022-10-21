@@ -135,4 +135,4 @@ dmypy.json
 # secret key
 *.secret.txt
 
-visualization/migrations
+*/migrations
