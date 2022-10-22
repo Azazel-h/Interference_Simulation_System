@@ -58,7 +58,6 @@ def index_page(request) -> render:
                                                 picture_size=form.cleaned_data['picture_size'],
                                                 incident_light_intensity=form.cleaned_data['incident_light_intensity'],
                                                 N=form.cleaned_data['N'])
-
         elif 'delete_preset' in request.POST:
             PresetFP.objects.get(id=request.POST['delete_preset']).delete()
             form = GraphForm()
