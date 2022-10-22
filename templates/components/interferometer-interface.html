@@ -18,8 +18,14 @@
                     {% csrf_token %}
                     {{ form | crispy }}
                     <br>
-                    <input type="submit" value="Посмотреть кольца" class="btn btn-success" name="send">
-                    <input type="submit" value="Сохранить данные" class="btn btn-success" name="save">
+
+                    <input type="submit" value="Посмотреть кольца" class="btn btn-success" name="send_request">
+
+                    {% if user.is_authenticated and presets|length < 5 %}
+                        <input type="submit" value="Сохранить данные" class="btn btn-success" name="save_preset">
+                    {% else %}
+                        <input type="submit" value="Сохранить данные" class="btn btn-success" name="save_preset" disabled>
+                    {% endif %}
                 </form>
             </div>
         </div>
