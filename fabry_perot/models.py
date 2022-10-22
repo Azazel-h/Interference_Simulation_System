@@ -16,6 +16,7 @@ class RequestFP(models.Model):
     picture_size = models.FloatField(default=0)
     incident_light_intensity = models.FloatField(default=0)
     N = models.IntegerField()
+    request_time = models.DateTimeField(auto_now_add=True)
 
 
 class PresetFP(models.Model):

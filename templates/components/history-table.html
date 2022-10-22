@@ -1,38 +1,44 @@
+{% load tz %}
 <div class="container">
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Цвет лазера</th>
-            <th scope="col">Расстояние между стеклами</th>
-            <th scope="col">Фокусное расстояние линзы</th>
-            <th scope="col">Разница хода</th>
-            <th scope="col">Коэффициент отражения</th>
-            <th scope="col">Коэффициент преломления</th>
-            <th scope="col">Размер рисунка</th>
-            <th scope="col">Значение интенсивности излучения лазера</th>
-            <th scope="col">Разрешение</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for req in array_of_reqs %}
+    {% if array_of_reqs|length > 0 %}
+        <table class="table">
+            <thead>
             <tr>
-                <th scope="row">
-                    <button type="button" class="btn btn-outline-success btn-sm btn-block"
-                            onclick="autoFill({{ forloop.counter }})">{{ forloop.counter }}</button>
-                </th>
-                <td id="laser-color-{{ forloop.counter }}"
-                    class="{{ req.laser_color }}">{{ req.get_laser_color_display }}</td>
-                <td id="glasses-dist-{{ forloop.counter }}">{{ req.glasses_distance }}</td>
-                <td id="focal-distance-{{ forloop.counter }}">{{ req.focal_distance }}</td>
-                <td id="stroke-difference-{{ forloop.counter }}">{{ req.stroke_difference }}</td>
-                <td id="reflectivity-{{ forloop.counter }}">{{ req.reflectivity }}</td>
-                <td id="refractive-index-{{ forloop.counter }}">{{ req.refractive_index }}</td>
-                <td id="picture-size-{{ forloop.counter }}">{{ req.picture_size }}</td>
-                <td id="incident-light-intensive-{{ forloop.counter }}">{{ req.incident_light_intensity }}</td>
-                <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
+                <th scope="col"></th>
+                <th scope="col">Цвет лазера</th>
+                <th scope="col">Расстояние между стеклами</th>
+                <th scope="col">Фокусное расстояние линзы</th>
+                <th scope="col">Разница хода</th>
+                <th scope="col">Коэффициент отражения</th>
+                <th scope="col">Коэффициент преломления</th>
+                <th scope="col">Размер рисунка</th>
+                <th scope="col">Значение интенсивности излучения лазера</th>
+                <th scope="col">Разрешение</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% load tz %}
+                {% for req in array_of_reqs %}
+                    <tr>
+                        <th scope="row">
+                            <button type="button" class="btn btn-outline-success btn-sm btn-block"
+                                    onclick="autoFill({{ forloop.counter }})">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
+                        </th>
+                        <td id="laser-color-{{ forloop.counter }}"
+                            class="{{ req.laser_color }}">{{ req.get_laser_color_display }}</td>
+                        <td id="glasses-dist-{{ forloop.counter }}">{{ req.glasses_distance }}</td>
+                        <td id="focal-distance-{{ forloop.counter }}">{{ req.focal_distance }}</td>
+                        <td id="stroke-difference-{{ forloop.counter }}">{{ req.stroke_difference }}</td>
+                        <td id="reflectivity-{{ forloop.counter }}">{{ req.reflectivity }}</td>
+                        <td id="refractive-index-{{ forloop.counter }}">{{ req.refractive_index }}</td>
+                        <td id="picture-size-{{ forloop.counter }}">{{ req.picture_size }}</td>
+                        <td id="incident-light-intensive-{{ forloop.counter }}">{{ req.incident_light_intensity }}</td>
+                        <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <strong>Вы пока не сделали ни одного запроса.</strong>
+    {% endif %}
 </div>
