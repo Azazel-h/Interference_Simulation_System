@@ -11,58 +11,27 @@ from .forms import GraphForm
 
 def index_page(request) -> render:
     context = {}
+    form = GraphForm()
+
     if request.method == 'POST':
         if 'send_request' in request.POST or 'save_preset' in request.POST:
             form = GraphForm(request.POST)
             if form.is_valid():
-                picture_size = form.cleaned_data['picture_size'] * mm
-                focal_distance = form.cleaned_data['focal_distance'] * mm
-                glasses_distance = form.cleaned_data['glasses_distance'] * mm
-                stroke_difference = form.cleaned_data['stroke_difference'] * nm
-                reflectivity = form.cleaned_data['reflectivity']
-                refractive_index = form.cleaned_data['refractive_index']
-                incident_light_intensity = form.cleaned_data['incident_light_intensity'] * W / cm / cm
-                color = form.cleaned_data['laser_color']
-                n = form.cleaned_data['N']
+                form_dict = dict(form.cleaned_data)
+                form_dict['user'] = request.user
 
                 if 'send_request' in request.POST:
-                    RequestFP.objects.create(user=request.user.username,
-                                             laser_color=form.cleaned_data['laser_color'],
-                                             glasses_distance=form.cleaned_data['glasses_distance'],
-                                             focal_distance=form.cleaned_data['focal_distance'],
-                                             stroke_difference=form.cleaned_data['stroke_difference'],
-                                             reflectivity=form.cleaned_data['reflectivity'],
-                                             refractive_index=form.cleaned_data['refractive_index'],
-                                             picture_size=form.cleaned_data['picture_size'],
-                                             incident_light_intensity=form.cleaned_data['incident_light_intensity'],
-                                             N=form.cleaned_data['N'])
-                    if color == 'g':
-                        wave_length = 532 * nm
-                    else:
-                        wave_length = 630 * nm
-
-                    graph = get_graph(stroke_difference, refractive_index, wave_length, picture_size,
-                                      n, glasses_distance, reflectivity, focal_distance, incident_light_intensity, color)
+                    RequestFP.objects.create(**form_dict)
+                    graph = get_graph(form_dict)
                     context['graph'] = graph
 
                 elif 'save_preset' in request.POST:
                     presets = PresetFP.objects.filter(user=request.user.username)[::-1]
                     if request.user.username and len(presets) < 5:
-                        PresetFP.objects.create(user=request.user.username,
-                                                laser_color=form.cleaned_data['laser_color'],
-                                                glasses_distance=form.cleaned_data['glasses_distance'],
-                                                focal_distance=form.cleaned_data['focal_distance'],
-                                                stroke_difference=form.cleaned_data['stroke_difference'],
-                                                reflectivity=form.cleaned_data['reflectivity'],
-                                                refractive_index=form.cleaned_data['refractive_index'],
-                                                picture_size=form.cleaned_data['picture_size'],
-                                                incident_light_intensity=form.cleaned_data['incident_light_intensity'],
-                                                N=form.cleaned_data['N'])
+                        PresetFP.objects.create(**form_dict)
+
         elif 'delete_preset' in request.POST:
             PresetFP.objects.get(id=request.POST['delete_preset']).delete()
-            form = GraphForm()
-    else:
-        form = GraphForm()
 
     presets = PresetFP.objects.filter(user=request.user.username)[::-1]
     user_requests = RequestFP.objects.filter(user=request.user.username)[::-1]
@@ -73,8 +42,24 @@ def index_page(request) -> render:
     return render(request, 'pages/fabry-perot.html', context=context)
 
 
-def get_graph(stroke_difference, refractive_index, wave_length, picture_size, n,
-              glasses_distance, reflectivity, focal_distance, incident_light_intensity, laser_color):
+def get_graph(form_dict):
+
+    picture_size = form_dict['picture_size'] * mm
+    focal_distance = form_dict['focal_distance'] * mm
+    glasses_distance = form_dict['glasses_distance'] * mm
+    stroke_difference = form_dict['stroke_difference'] * nm
+    reflectivity = form_dict['reflectivity']
+    refractive_index = form_dict['refractive_index']
+    incident_light_intensity = form_dict['incident_light_intensity'] * W / cm / cm
+    laser_color = form_dict['laser_color']
+
+    if laser_color == 'g':
+        wave_length = 532 * nm
+    else:
+        wave_length = 630 * nm
+
+    n = form_dict['N']
+
     f = Begin(picture_size, wave_length, n)
     intensity = Intensity(f, 1)
 

@@ -21,12 +21,16 @@
                     <th scope="row">
                         <div class="hstack gap-2">
                         <button type="button" class="btn btn-outline-success btn-sm btn-block"
-                                onclick="autoFill({{ forloop.counter }})">USE</button>
+                                onclick="autoFill({{ forloop.counter }})">
+                            <i class="bi bi-check2"></i>
+                        </button>
 
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="delete_preset" value="{{ req.id }}">
-                            <input type="submit" class="btn btn-outline-danger btn-sm btn-block" value="DEL">
+                            <button type="submit" class="btn btn-outline-danger btn-sm btn-block">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
                         </form>
                         </div>
                     </th>
