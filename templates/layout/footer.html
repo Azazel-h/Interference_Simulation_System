@@ -1,0 +1,30 @@
+{% load static %}
+
+<footer id="footer">
+    <div id="footer-links">
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5>Информация</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <a class="text-muted text-decoration-none" href="/team">Авторы</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5>Прочее</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <a class="text-muted text-decoration-none" href="/team">Исходный код</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="copyright" class="text-muted p-3">
+        <img src="{% static 'img/bmstu.webp' %}" alt="Logo" width="24" height="24">
+        Студенческая Экспериментальная Лаборатория Физики © 2022
+    </div>
+</footer>
