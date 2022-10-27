@@ -5,7 +5,7 @@
             <thead>
             <tr>
                 <th scope="col"></th>
-                <th scope="col">Цвет лазера</th>
+                <th scope="col">Длина волны</th>
                 <th scope="col">Расстояние между стеклами</th>
                 <th scope="col">Фокусное расстояние линзы</th>
                 <th scope="col">Разница хода</th>
@@ -24,8 +24,7 @@
                             <button type="button" class="btn btn-outline-success btn-sm btn-block"
                                     onclick="autoFill({{ forloop.counter }})">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
                         </th>
-                        <td id="laser-color-{{ forloop.counter }}"
-                            class="{{ req.laser_color }}">{{ req.get_laser_color_display }}</td>
+                        <td id="wave-length-{{ forloop.counter }}">{{ req.wave_length }}</td>
                         <td id="glasses-dist-{{ forloop.counter }}">{{ req.glasses_distance }}</td>
                         <td id="focal-distance-{{ forloop.counter }}">{{ req.focal_distance }}</td>
                         <td id="stroke-difference-{{ forloop.counter }}">{{ req.stroke_difference }}</td>

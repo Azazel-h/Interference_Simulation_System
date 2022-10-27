@@ -1,5 +1,5 @@
 function autoFill(num) {
-    document.getElementById("id_laser_color").value = document.getElementById("laser-color-" + num).className;
+    document.getElementById("id_wave_length").value = document.getElementById("wave-length-" + num).className;
     document.getElementById("id_glasses_distance").value = document.getElementById("glasses-dist-" + num).innerText;
     document.getElementById("id_focal_distance").value = document.getElementById("focal-distance-" + num).innerText;
     document.getElementById("id_stroke_difference").value = document.getElementById("stroke-difference-" + num).innerText;

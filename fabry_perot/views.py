@@ -2,11 +2,11 @@ import math
 
 import plotly.express as px
 from LightPipes import *
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from .models import RequestFP, PresetFP
+import sepl_light_lib as sll
 
 from .forms import GraphForm
+from .models import RequestFP, PresetFP
 
 
 def index_page(request) -> render:
@@ -43,7 +43,6 @@ def index_page(request) -> render:
 
 
 def get_graph(form_dict):
-
     picture_size = form_dict['picture_size'] * mm
     focal_distance = form_dict['focal_distance'] * mm
     glasses_distance = form_dict['glasses_distance'] * mm
@@ -51,20 +50,15 @@ def get_graph(form_dict):
     reflectivity = form_dict['reflectivity']
     refractive_index = form_dict['refractive_index']
     incident_light_intensity = form_dict['incident_light_intensity'] * W / cm / cm
-    laser_color = form_dict['laser_color']
-
-    if laser_color == 'g':
-        wave_length = 532 * nm
-    else:
-        wave_length = 630 * nm
+    wave_length = form_dict['wave_length']
 
     n = form_dict['N']
 
-    f = Begin(picture_size, wave_length, n)
+    f = Begin(picture_size, wave_length * sll.nm, n)
     intensity = Intensity(f, 1)
 
-    k = 2 * math.pi / wave_length
-    second_k = 2 * math.pi / (wave_length + stroke_difference)
+    k = 2 * math.pi / (wave_length * sll.nm)
+    second_k = 2 * math.pi / (wave_length * sll.nm + stroke_difference)
     fineness = 4.0 * reflectivity / math.pow(1.0 - reflectivity, 2)
 
     step = picture_size / n / mm
@@ -89,10 +83,8 @@ def get_graph(form_dict):
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
     config = {'scrollZoom': True, 'toImageButtonOptions': {'height': None, 'width': None}}
-    if laser_color == 'g':
-        fig = px.imshow(intensity, color_continuous_scale=['#013b00', 'lime'])
-    else:
-        fig = px.imshow(intensity, color_continuous_scale=['#3b0000', 'red'])
+    fig = px.imshow(intensity,
+                    color_continuous_scale=['#000000', sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length))])
 
     # print(px.colors.sequential.Inferno)
     graph = fig.to_html(full_html=False, config=config)
