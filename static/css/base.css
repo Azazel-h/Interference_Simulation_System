@@ -1,0 +1,9 @@
+#footer {
+    background-color: rgba(0, 0, 0, 0.03);
+    font-size: 12px;
+    text-align: center;
+}
+
+#footer a {
+    text-decoration: none;
+}
