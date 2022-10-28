@@ -12,11 +12,8 @@ def index(request) -> render:
         form = GraphForm(request.POST)
         if form.is_valid():
             wavelength = form.cleaned_data['wavelength'] * nm
-            R = form.cleaned_data['R'] * mm
             z1 = form.cleaned_data['z1'] * cm
             z2 = form.cleaned_data['z2'] * cm
-            z3 = form.cleaned_data['z3'] * cm
-            z4 = form.cleaned_data['z4'] * cm
             Rbs = form.cleaned_data['Rbs']
             tx = form.cleaned_data['tx'] * mrad
             ty = form.cleaned_data['ty'] * mrad
@@ -24,7 +21,7 @@ def index(request) -> render:
             size = form.cleaned_data['size'] * mm
             N = form.cleaned_data['N']
 
-            graph = get_graph(wavelength, R, z1, z2, z3, z4, Rbs, tx, ty, f, size, N)
+            graph = get_graph(wavelength, z1, z2, Rbs, tx, ty, f, size, N)
             context['graph'] = graph
         else:
             form = GraphForm()
@@ -32,7 +29,10 @@ def index(request) -> render:
     return render(request, 'pages/michelson.html', context=context)
 
 
-def get_graph(wavelength, R, z1, z2, z3, z4, Rbs, tx, ty, f, size, N):
+def get_graph(wavelength, z1, z2, Rbs, tx, ty, f, size, N):
+    R = 3 * mm
+    z3 = 3 * cm
+    z4 = 5 * cm
     # wavelength = 632.8 * nm  # wavelength of HeNe laser
     # R = 3 * mm  # laser beam radius
     # z1 = 8 * cm  # length of arm 1

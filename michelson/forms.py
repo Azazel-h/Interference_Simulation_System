@@ -7,10 +7,6 @@ class GraphForm(forms.Form):
         min_value=200,
         max_value=800,
         initial=632.8)
-    R = forms.FloatField(
-        label='радиус лазерного луча [мм]',
-        min_value=0,
-        initial=3)
     z1 = forms.FloatField(
         label='Длина первого плеча [см]',
         min_value=0,
@@ -19,14 +15,6 @@ class GraphForm(forms.Form):
         label='Длина второго плеча [см]',
         min_value=0,
         initial=7)
-    z3 = forms.FloatField(
-        label='расстояние от лазера до разделителя луча [см]',
-        min_value=0,
-        initial=3)
-    z4 = forms.FloatField(
-        label='расстояние от разделителя до экрана [см]',
-        min_value=0,
-        initial=5)
     Rbs = forms.FloatField(
         label='Отражаемость разделитель луча',
         min_value=0,
