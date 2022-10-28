@@ -1,8 +1,9 @@
-#footer #footer-links {
-    background-color: rgba(0, 0, 0, 0.05);
+#footer {
+    background-color: rgba(0, 0, 0, 0.03);
+    font-size: 12px;
+    text-align: center;
 }
 
-#footer #copyright {
-    background-color: rgba(0, 0, 0, 0.1);
-    text-align: center;
+#footer a {
+    text-decoration: none;
 }
