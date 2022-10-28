@@ -2,12 +2,8 @@ from django.db import models
 
 
 class RequestFP(models.Model):
-    COLOR = (
-        ('g', 'Зеленый - 532 нм'),
-        ('r', 'Красный - 630 нм')
-    )
     user = models.CharField(max_length=50)
-    laser_color = models.CharField(choices=COLOR, max_length=50)
+    wave_length = models.FloatField(default=0)
     glasses_distance = models.FloatField(default=0)
     focal_distance = models.FloatField(default=0)
     stroke_difference = models.FloatField(default=0)
@@ -20,12 +16,8 @@ class RequestFP(models.Model):
 
 
 class PresetFP(models.Model):
-    COLOR = (
-        ('g', 'Зеленый - 532 нм'),
-        ('r', 'Красный - 630 нм')
-    )
     user = models.CharField(max_length=50)
-    laser_color = models.CharField(choices=COLOR, max_length=50)
+    wave_length = models.FloatField(default=0)
     glasses_distance = models.FloatField(default=0)
     focal_distance = models.FloatField(default=0)
     stroke_difference = models.FloatField(default=0)

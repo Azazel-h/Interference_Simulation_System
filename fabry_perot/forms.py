@@ -2,9 +2,10 @@ from django import forms
 
 
 class GraphForm(forms.Form):
-    laser_color = forms.ChoiceField(label='Цвет лазера',
-                                    choices=(('g', 'Зеленый - 532 нм'),
-                                             ('r', 'Красный - 630 нм')))
+    wave_length = forms.FloatField(label='Длина волны [нм]',
+                                   min_value=380,
+                                   max_value=780,
+                                   initial=630)
     glasses_distance = forms.FloatField(label='Расстояние между стеклами [мм]',
                                         min_value=0,
                                         initial=15)
