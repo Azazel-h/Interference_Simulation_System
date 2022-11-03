@@ -88,12 +88,11 @@ def get_graph(form_dict):
 
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
-    config = {'scrollZoom': True, 'toImageButtonOptions': {'height': None, 'width': None}}
+    config = {'displaylogo': False,'scrollZoom': True, 'toImageButtonOptions': {'height': None, 'width': None}, 'modeBarButtonsToRemove': ['zoomOut2d', 'pan']}
     if laser_color == 'g':
         fig = px.imshow(intensity, color_continuous_scale=['#013b00', 'lime'])
     else:
         fig = px.imshow(intensity, color_continuous_scale=['#3b0000', 'red'])
-
     # print(px.colors.sequential.Inferno)
     graph = fig.to_html(full_html=False, config=config)
     return graph

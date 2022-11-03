@@ -85,7 +85,7 @@ def get_graph(wavelength, R, z1, z2, z3, z4, Rbs, tx, ty, f, size, N):
     # fig = px.axis('off')
     # fig = px.title('intensity pattern')
     fig = px.imshow(I)
-
-    # print(px.colors.sequential.Inferno)
-    graph = fig.to_html(full_html=False)
+    config = {'displaylogo': False,  'modeBarButtonsToRemove': ['zoomOut2d', 'pan']}
+    graph = fig.to_html(full_html=False, config=config)
+  
     return graph
