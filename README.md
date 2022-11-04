@@ -8,3 +8,9 @@
 ```
 ./run_container.sh 8080
 ```
+
+Ручной запуск (из корня проекта):
+```
+docker build . --tag interferometer
+docker run --rm -it -p 8000:8000 -v /путь/от/корня/Fabry-Perot_Interferometer:/project interferometer
+```
