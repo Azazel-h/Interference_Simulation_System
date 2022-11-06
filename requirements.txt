@@ -5,4 +5,4 @@ LightPipes==2.1.3
 pandas==1.5.1
 plotly==5.11.0
 secret_key_generator==0.0.8
-sepl_light_lib==0.0.2
+sepl_light_lib==0.0.3.post0
