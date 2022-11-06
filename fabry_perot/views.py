@@ -43,22 +43,23 @@ def index_page(request) -> render:
 
 
 def get_graph(form_dict):
-    picture_size = form_dict['picture_size'] * mm
-    focal_distance = form_dict['focal_distance'] * mm
-    glasses_distance = form_dict['glasses_distance'] * mm
-    stroke_difference = form_dict['stroke_difference'] * nm
+    wave_length = form_dict['wave_length'] * sll.nm
+    glasses_distance = form_dict['glasses_distance'] * sll.mm
+    focal_distance = form_dict['focal_distance'] * sll.mm
+    stroke_difference_hz = form_dict['stroke_difference'] * sll.Ghz
     reflectivity = form_dict['reflectivity']
     refractive_index = form_dict['refractive_index']
-    incident_light_intensity = form_dict['incident_light_intensity'] * W / cm / cm
-    wave_length = form_dict['wave_length']
-
+    picture_size = form_dict['picture_size'] * sll.mm
+    incident_light_intensity = form_dict['incident_light_intensity'] * sll.W / (sll.cm * sll.cm)
     n = form_dict['N']
 
-    f = Begin(picture_size, wave_length * sll.nm, n)
+    f = Begin(picture_size, wave_length, n)
     intensity = Intensity(f, 1)
 
-    k = 2 * math.pi / (wave_length * sll.nm)
-    second_k = 2 * math.pi / (wave_length * sll.nm + stroke_difference)
+    stroke_difference = stroke_difference_hz * wave_length * wave_length / sll.c
+
+    k = 2 * math.pi / wave_length
+    second_k = 2 * math.pi / (wave_length + stroke_difference)
     fineness = 4.0 * reflectivity / math.pow(1.0 - reflectivity, 2)
 
     step = picture_size / n / mm
@@ -84,7 +85,8 @@ def get_graph(form_dict):
     #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
     config = {'scrollZoom': True, 'toImageButtonOptions': {'height': None, 'width': None}}
     fig = px.imshow(intensity,
-                    color_continuous_scale=['#000000', sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length))])
+                    color_continuous_scale=['#000000',
+                                            sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))])
 
     # print(px.colors.sequential.Inferno)
     graph = fig.to_html(full_html=False, config=config)

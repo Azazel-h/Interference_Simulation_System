@@ -12,10 +12,10 @@ class GraphForm(forms.Form):
     focal_distance = forms.FloatField(label='Фокусное расстояние линзы [мм]',
                                       min_value=0,
                                       initial=100)
-    stroke_difference = forms.FloatField(label='Разница хода [нм]',
+    stroke_difference = forms.FloatField(label='Разница хода [ГГц]',
                                          min_value=0,
                                          initial=0)
-    reflectivity = forms.FloatField(label='Коэффициент отражения [--]',
+    reflectivity = forms.FloatField(label='Коэффициент отражения',
                                     min_value=0,
                                     max_value=0.9999,
                                     initial=0.7)
