@@ -1,11 +1,13 @@
 from django import forms
+from interferometers.widgets import RangeInput
 
 
 class GraphForm(forms.Form):
     wave_length = forms.FloatField(label='Длина волны [нм]',
                                    min_value=380,
                                    max_value=780,
-                                   initial=630)
+                                   initial=630,
+                                   widget=RangeInput)
     glasses_distance = forms.FloatField(label='Расстояние между стеклами [мм]',
                                         min_value=0,
                                         initial=15)
@@ -18,7 +20,8 @@ class GraphForm(forms.Form):
     reflectivity = forms.FloatField(label='Коэффициент отражения',
                                     min_value=0,
                                     max_value=0.9999,
-                                    initial=0.7)
+                                    initial=0.7,
+                                    widget=RangeInput)
     refractive_index = forms.FloatField(label='Коэффициент преломления',
                                         min_value=1,
                                         initial=1)
@@ -31,4 +34,3 @@ class GraphForm(forms.Form):
     N = forms.IntegerField(label='Разрешение',
                            min_value=1,
                            initial=500)
-

@@ -1,0 +1,1 @@
+<input oninput="this.nextElementSibling.value = Math.floor(this.value * 100) / 100" type="range" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %} style="direction: ltr;-webkit-appearance: progress-bar;"><output>{{ widget.value|stringformat:'s' }}</output>
