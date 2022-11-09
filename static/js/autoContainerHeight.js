@@ -1,14 +1,11 @@
-window.onload = window.onresize = function autoContainerHeight() {
-    var container = document.getElementById("main-container");
+let navbar = document.getElementById("navigation");
+let container = document.getElementById("main-container");
+let footer = document.getElementById("footer");
 
-    var navbar_height = document.getElementById("navigation").offsetHeight;
-    var container_height = container.offsetHeight;
-    var footer_height = document.getElementById("footer").offsetHeight;
-    var window_height = window.innerHeight;
+window.onload = window.onresize = container.ontransitionend = function() {
+    container.style.height = null;
 
-    if (navbar_height + container_height + footer_height <= window_height) {
-        container.style.height = (window_height - navbar_height - footer_height) + "px";
-    } else {
-        container.style.height = null;
+    if (container.offsetHeight < window.innerHeight - navbar.offsetHeight - footer.offsetHeight) {
+        container.style.height = (window.innerHeight - navbar.offsetHeight - footer.offsetHeight) + "px";
     }
 }
