@@ -1,48 +1,73 @@
 import math
+from typing import Union
 
 import plotly.express as px
-from LightPipes import *
-from django.shortcuts import render
 import sepl_light_lib as sll
+from LightPipes import *
+from django.http import HttpResponse
+from django.shortcuts import render
 
 from .forms import GraphForm
 from .models import RequestFP, PresetFP
 
 
-def index_page(request) -> render:
-    context = {}
-    form = GraphForm()
-
-    if request.method == 'POST':
-        if 'send_request' in request.POST or 'save_preset' in request.POST:
-            form = GraphForm(request.POST)
-            if form.is_valid():
-                form_dict = dict(form.cleaned_data)
-                form_dict['user'] = request.user
-
-                if 'send_request' in request.POST:
-                    RequestFP.objects.create(**form_dict)
-                    graph = get_graph(form_dict)
-                    context['graph'] = graph
-
-                elif 'save_preset' in request.POST:
-                    presets = PresetFP.objects.filter(user=request.user.username)[::-1]
-                    if request.user.username and len(presets) < 5:
-                        PresetFP.objects.create(**form_dict)
-
-        elif 'delete_preset' in request.POST:
-            PresetFP.objects.get(id=request.POST['delete_preset']).delete()
-
-    presets = PresetFP.objects.filter(user=request.user.username)[::-1]
-    user_requests = RequestFP.objects.filter(user=request.user.username)[::-1]
-    context['presets'] = presets
-    context['array_of_reqs'] = user_requests[:5]
-    context['form'] = form
+# /fabry_perot
+def index_page(request) -> Union[HttpResponse, None]:
+    context = {
+        'presets': PresetFP.objects.filter(user=request.user.username)[::-1],
+        'array_of_reqs': RequestFP.objects.filter(user=request.user.username)[::-1][:5],
+        'form': GraphForm()
+    }
 
     return render(request, 'pages/fabry-perot.html', context=context)
 
 
-def get_graph(form_dict):
+# /fabry_perot/update_graph
+def update_graph(request) -> Union[HttpResponse, None]:
+    graph = None
+    form = GraphForm(request.POST)
+
+    if form.is_valid():
+        form_dict = dict(form.cleaned_data)
+        form_dict['user'] = request.user
+        graph = get_graph(form_dict)
+
+    return HttpResponse(graph)
+
+
+# /fabry_perot/update_history
+def update_history(request) -> Union[HttpResponse, None]:
+    form = GraphForm(request.POST)
+
+    if form.is_valid():
+        form_dict = dict(form.cleaned_data)
+        form_dict['user'] = request.user
+        RequestFP.objects.create(**form_dict)
+
+    return render(request, 'components/history-table.html',
+                  context={'array_of_reqs': RequestFP.objects.filter(user=request.user.username)[::-1][:5]})
+
+
+# /fabry_perot/update_preset
+def update_preset(request) -> Union[HttpResponse, None]:
+    if request.POST['preset_operation'] == 'save_preset':
+        form = GraphForm(request.POST)
+
+        if form.is_valid():
+            form_dict = dict(form.cleaned_data)
+            form_dict['user'] = request.user
+
+            presets = PresetFP.objects.filter(user=request.user.username)[::-1]
+            if request.user.username and len(presets) < 5:
+                PresetFP.objects.create(**form_dict)
+    elif request.POST['preset_operation'] == 'delete_preset':
+        PresetFP.objects.get(id=request.POST['delete_preset']).delete()
+
+    return render(request, 'components/presets-table.html',
+                  context={'presets': PresetFP.objects.filter(user=request.user.username)[::-1]})
+
+
+def get_graph(form_dict: dict) -> str:
     wave_length = form_dict['wave_length'] * sll.nm
     glasses_distance = form_dict['glasses_distance'] * sll.mm
     focal_distance = form_dict['focal_distance'] * sll.mm
@@ -90,4 +115,5 @@ def get_graph(form_dict):
 
     # print(px.colors.sequential.Inferno)
     graph = fig.to_html(full_html=False, config=config)
+
     return graph

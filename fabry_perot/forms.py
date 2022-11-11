@@ -25,7 +25,7 @@ class GraphForm(forms.Form):
     picture_size = forms.FloatField(label='Размер рисунка [мм]',
                                     min_value=0,
                                     initial=5)
-    incident_light_intensity = forms.FloatField(label='Значение интенсивности излучения лазера [W / (cm * cm)]',
+    incident_light_intensity = forms.FloatField(label='Интенсивность излучения лазера [W / (cm * cm)]',
                                                 min_value=0,
                                                 initial=1000)
     N = forms.IntegerField(label='Разрешение',

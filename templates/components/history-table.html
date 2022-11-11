@@ -1,7 +1,8 @@
 {% load tz %}
+
 <div class="container">
     {% if array_of_reqs|length > 0 %}
-        <table class="table">
+        <table id="history-table" class="table">
             <thead>
             <tr>
                 <th scope="col"></th>
@@ -12,7 +13,7 @@
                 <th scope="col">Коэффициент отражения</th>
                 <th scope="col">Коэффициент преломления</th>
                 <th scope="col">Размер рисунка</th>
-                <th scope="col">Значение интенсивности излучения лазера</th>
+                <th scope="col">Интенсивность излучения лазера</th>
                 <th scope="col">Разрешение</th>
             </tr>
             </thead>
@@ -21,8 +22,7 @@
                 {% for req in array_of_reqs %}
                     <tr>
                         <th scope="row">
-                            <button type="button" class="btn btn-outline-success btn-sm btn-block"
-                                    onclick="autoFill({{ forloop.counter }})">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
+                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFill({{ forloop.counter }}, 'history-table')">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
                         </th>
                         <td id="wave-length-{{ forloop.counter }}">{{ req.wave_length }}</td>
                         <td id="glasses-dist-{{ forloop.counter }}">{{ req.glasses_distance }}</td>
