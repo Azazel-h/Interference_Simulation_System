@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.forms',
     'accounts',
     'fabry_perot',
+    'michelson',
     'crispy_forms',
     'django_cas_ng'
 ]
