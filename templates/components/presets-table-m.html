@@ -1,0 +1,53 @@
+<div class="container">
+    {% if presets|length > 0 %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Длина волны</th>
+                <th scope="col">Длина 1 плеча</th>
+                <th scope="col">Длина 2 плеча</th>
+                <th scope="col">Отражаемость разделителя луча</th>
+                <th scope="col">Наклон зеркала по X</th>
+                <th scope="col">Наклон зеркала по Y</th>
+                <th scope="col">фокусное расстояние</th>
+                <th scope="col">Размер рисунка</th>
+                <th scope="col">Разрешение</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for req in presets %}
+                <tr>
+                    <th scope="row">
+                        <div class="hstack gap-2">
+                            <button type="button" class="btn btn-outline-success btn-sm btn-block"
+                                    onclick="autoFillM({{ forloop.counter }})">
+                                <i class="bi bi-check2"></i>
+                            </button>
+
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_preset" value="{{ req.id }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm btn-block">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </th>
+                    <td id="wavelength-{{ forloop.counter }}">{{ req.wavelength }}</td>
+                    <td id="z1-{{ forloop.counter }}">{{ req.z1 }}</td>
+                    <td id="z2-{{ forloop.counter }}">{{ req.z2 }}</td>
+                    <td id="Rbs-{{ forloop.counter }}">{{ req.Rbs }}</td>
+                    <td id="tx-{{ forloop.counter }}">{{ req.tx }}</td>
+                    <td id="ty-{{ forloop.counter }}">{{ req.ty }}</td>
+                    <td id="f-{{ forloop.counter }}">{{ req.f }}</td>
+                    <td id="size-{{ forloop.counter }}">{{ req.size }}</td>
+                    <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <strong>Вы пока не сохранили ни одного набора данных.</strong>
+    {% endif %}
+</div>

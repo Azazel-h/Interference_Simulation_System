@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'fabry_perot',
+    'michelson',
     'crispy_forms',
     'django_cas_ng'
 ]
