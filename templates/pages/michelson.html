@@ -7,6 +7,24 @@
 
 {% block content %}
     {% include 'components/interferometer-interface.html' %}
+
+    <div class="container pt-5">
+        <div class="accordion" id="accordionTables">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Структура Интерферометра Майкельсона
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body text-center">
+                        <img src="{% static 'img/michelson_struct.png' %}" alt="michelson_struct" class="w-75 h-50 rounded">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block scripts %}
