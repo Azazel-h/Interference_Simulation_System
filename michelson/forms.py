@@ -3,7 +3,7 @@ from django import forms
 
 class GraphForm(forms.Form):
     wavelength = forms.FloatField(
-        label='длина волны гелий-неонового лазера [нм]',
+        label='Длина волны гелий-неонового лазера [нм]',
         min_value=200,
         max_value=800,
         initial=632.8)
@@ -28,7 +28,7 @@ class GraphForm(forms.Form):
         min_value=0,
         initial=0)
     f = forms.FloatField(
-        label='фокусное расстояние положительной линзы [см]',
+        label='Фокусное расстояние положительной линзы [см]',
         min_value=0,
         initial=50)
     size = forms.FloatField(
