@@ -13,7 +13,7 @@ function updateGraph(is_authorized, csrftoken) {
         },
         data: request_data,
         success: function(response) {
-            document.getElementById("graph").innerHTML = response;
+            $("#graph").html(response);
         }
     });
 
@@ -34,7 +34,7 @@ function savePreset(csrftoken) {
         },
         data: request_data,
         success: function (response) {
-            document.getElementById("presets").innerHTML = response;
+            $("#presets").html(response);
 
             let save_preset_element = document.getElementById("save_preset");
             if (! save_preset_element.disabled && response.split("<tr>").length - 2 >= 5) {
@@ -56,7 +56,7 @@ function deletePreset(id, csrftoken) {
             "preset_operation": "delete_preset"
         },
         success: function (response) {
-            document.getElementById("presets").innerHTML = response;
+            $("#presets").html(response);
 
             let save_preset_element = document.getElementById("save_preset");
             if (save_preset_element.disabled) {
@@ -77,7 +77,7 @@ function updateHistory(csrftoken) {
         },
         data: request_data,
         success: function(response) {
-            document.getElementById("history").innerHTML = response;
+            $("#history").html(response);
         }
     });
 }
