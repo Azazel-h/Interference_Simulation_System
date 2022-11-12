@@ -2,17 +2,17 @@ from django import forms
 
 
 class GraphForm(forms.Form):
-    wave_length = forms.FloatField(label='Длина волны [нм]',
+    wave_length = forms.FloatField(label='Длина волны [\\(нм\\)]',
                                    min_value=380,
                                    max_value=780,
                                    initial=630)
-    glasses_distance = forms.FloatField(label='Расстояние между стеклами [мм]',
+    glasses_distance = forms.FloatField(label='Расстояние между стеклами [\\(мм\\)]',
                                         min_value=0,
                                         initial=15)
-    focal_distance = forms.FloatField(label='Фокусное расстояние линзы [мм]',
+    focal_distance = forms.FloatField(label='Фокусное расстояние линзы [\\(мм\\)]',
                                       min_value=0,
                                       initial=100)
-    stroke_difference = forms.FloatField(label='Разница хода [ГГц]',
+    stroke_difference = forms.FloatField(label='Ширина спектральной линии [\\(ГГц\\)]',
                                          min_value=0,
                                          initial=0)
     reflectivity = forms.FloatField(label='Коэффициент отражения',
@@ -22,10 +22,10 @@ class GraphForm(forms.Form):
     refractive_index = forms.FloatField(label='Коэффициент преломления',
                                         min_value=1,
                                         initial=1)
-    picture_size = forms.FloatField(label='Размер рисунка [мм]',
+    picture_size = forms.FloatField(label='Размер рисунка [\\(мм\\)]',
                                     min_value=0,
                                     initial=5)
-    incident_light_intensity = forms.FloatField(label='Значение интенсивности излучения лазера [W / (cm * cm)]',
+    incident_light_intensity = forms.FloatField(label='Значение интенсивности излучения лазера [\\(\\frac{W}{см^{2}}\\)]',
                                                 min_value=0,
                                                 initial=1000)
     N = forms.IntegerField(label='Разрешение',
