@@ -1,6 +1,6 @@
 <div class="container">
     {% if presets|length > 0 %}
-        <table class="table">
+        <table id="preset" class="table">
             <thead>
             <tr>
                 <th scope="col"></th>
@@ -20,15 +20,15 @@
                 <tr>
                     <th scope="row">
                         <div class="hstack gap-2">
-                            <button type="button" class="btn btn-outline-success btn-sm btn-block"
-                                    onclick="autoFillM({{ forloop.counter }})">
+                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFillM({{ forloop.counter }}, 'preset')">
                                 <i class="bi bi-check2"></i>
                             </button>
 
-                            <form method="post">
+                            <form>
                                 {% csrf_token %}
-                                <input type="hidden" name="delete_preset" value="{{ req.id }}">
-                                <button type="submit" class="btn btn-outline-danger btn-sm btn-block">
+
+                                <input type="hidden" value="{{ req.id }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm btn-block" onclick="deletePreset({{ req.id }}, '{{ csrf_token }}')">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
                             </form>

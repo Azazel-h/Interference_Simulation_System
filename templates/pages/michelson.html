@@ -22,28 +22,28 @@
                     </div>
                 </div>
             </div>
-                        <div class="accordion-item">
+            <div class="accordion-item">
                 <h2 class="accordion-header" id="headingTwo">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Сохраненные наборы данных
-                  </button>
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Сохраненные наборы данных
+                    </button>
                 </h2>
                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
+                    <div id="presets" class="accordion-body">
                         {% include 'components/presets-table-m.html' %}
-                  </div>
+                    </div>
                 </div>
             </div>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingThree">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-                    История ваших запросов
-                  </button>
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                        История ваших запросов
+                    </button>
                 </h2>
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
+                    <div id="history" class="accordion-body">
                         {% include 'components/history-table-m.html' %}
-                  </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,4 +53,5 @@
 
 {% block scripts %}
     <script src="{% static 'js/autoFill.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/updateWithoutReload.js' %}" type="text/javascript"></script>
 {% endblock %}

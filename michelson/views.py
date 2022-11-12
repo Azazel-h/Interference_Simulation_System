@@ -1,45 +1,67 @@
-from django.shortcuts import render
+from typing import Union
+
 import plotly.express as px
 from LightPipes import *
+from django.http import HttpResponse
+from django.shortcuts import render
 
 from .forms import GraphForm
 from .models import RequestM, PresetM
 
-import math
-from django import forms
 
-
-def index_page(request) -> render:
-    context = {}
-    form = GraphForm()
-
-    if request.method == 'POST':
-        if 'send_request' in request.POST or 'save_preset' in request.POST:
-            form = GraphForm(request.POST)
-            if form.is_valid():
-                form_dict = dict(form.cleaned_data)
-                form_dict['user'] = request.user
-
-                if 'send_request' in request.POST:
-                    RequestM.objects.create(**form_dict)
-                    graph = get_graph(form_dict)
-                    context['graph'] = graph
-
-                elif 'save_preset' in request.POST:
-                    presets = PresetM.objects.filter(user=request.user.username)[::-1]
-                    if request.user.username and len(presets) < 5:
-                        PresetM.objects.create(**form_dict)
-
-        elif 'delete_preset' in request.POST:
-            PresetM.objects.get(id=request.POST['delete_preset']).delete()
-
-    presets = PresetM.objects.filter(user=request.user.username)[::-1]
-    user_requests = RequestM.objects.filter(user=request.user.username)[::-1]
-    context['presets'] = presets
-    context['array_of_reqs'] = user_requests[:5]
-    context['form'] = form
+def index_page(request) -> Union[HttpResponse, None]:
+    context = {
+        'presets': PresetM.objects.filter(user=request.user.username)[::-1],
+        'array_of_reqs': RequestM.objects.filter(user=request.user.username)[::-1][:5],
+        'form': GraphForm()
+    }
 
     return render(request, 'pages/michelson.html', context=context)
+
+
+# /michelson/update_graph
+def update_graph(request) -> Union[HttpResponse, None]:
+    graph = None
+    form = GraphForm(request.POST)
+
+    if form.is_valid():
+        form_dict = dict(form.cleaned_data)
+        form_dict['user'] = request.user
+        graph = get_graph(form_dict)
+
+    return HttpResponse(graph)
+
+
+# /michelson/update_history
+def update_history(request) -> Union[HttpResponse, None]:
+    form = GraphForm(request.POST)
+
+    if form.is_valid():
+        form_dict = dict(form.cleaned_data)
+        form_dict['user'] = request.user
+        RequestM.objects.create(**form_dict)
+
+    return render(request, 'components/history-table-m.html',
+                  context={'array_of_reqs': RequestM.objects.filter(user=request.user.username)[::-1][:5]})
+
+
+# /michelson/update_preset
+def update_preset(request) -> Union[HttpResponse, None]:
+    if request.POST['preset_operation'] == 'save_preset':
+        form = GraphForm(request.POST)
+
+        if form.is_valid():
+            form_dict = dict(form.cleaned_data)
+            form_dict['user'] = request.user
+
+            presets = PresetM.objects.filter(user=request.user.username)[::-1]
+            if request.user.username and len(presets) < 5:
+                PresetM.objects.create(**form_dict)
+    elif request.POST['preset_operation'] == 'delete_preset':
+        PresetM.objects.get(id=request.POST['delete_preset']).delete()
+
+    return render(request, 'components/presets-table-m.html',
+                  context={'presets': PresetM.objects.filter(user=request.user.username)[::-1]})
 
 
 def get_graph(form_dict):

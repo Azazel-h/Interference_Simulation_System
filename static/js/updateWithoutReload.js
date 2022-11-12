@@ -1,3 +1,5 @@
+const current_url = window.location.href.toString().split(window.location.host)[1];
+
 $(document).on("submit", function(event) {
     event.preventDefault();
 });
@@ -6,7 +8,7 @@ function updateGraph(is_authorized, csrftoken) {
     let request_data = getFormFields();
 
     $.ajax({
-        url: "/fabry_perot/update_graph/",
+        url: current_url + "update_graph/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -27,7 +29,7 @@ function savePreset(csrftoken) {
     request_data["preset_operation"] = "save_preset";
 
     $.ajax({
-        url: "/fabry_perot/update_preset/",
+        url: current_url + "update_preset/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -46,7 +48,7 @@ function savePreset(csrftoken) {
 
 function deletePreset(id, csrftoken) {
     $.ajax({
-        url: "/fabry_perot/update_preset/",
+        url: current_url + "update_preset/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -70,7 +72,7 @@ function updateHistory(csrftoken) {
     let request_data = getFormFields();
 
     $.ajax({
-        url: "/fabry_perot/update_history/",
+        url: current_url + "update_history/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -87,7 +89,7 @@ function getFormFields() {
 
     $("#interferometer input").each(function(_, value) {
         if (value.hasAttribute("type") && value.getAttribute("type") === "number") {
-            request_data[value.name] = value.value;
+            request_data[value.id.slice(3)] = value.value;
         }
     });
 
