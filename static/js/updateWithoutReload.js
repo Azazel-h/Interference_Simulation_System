@@ -14,15 +14,37 @@ function updateGraph(is_authorized, csrftoken) {
             "X-CSRFToken": csrftoken
         },
         data: request_data,
+        timeout: 10000,
         beforeSend: function() {
             $("#graph").html(
                 "<svg class=\"spinner\" viewBox=\"0 0 50 50\">" +
-                "  <circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle>" +
+                "    <circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle>" +
                 "</svg>"
             );
         },
         success: function(response) {
             $("#graph").html(response);
+        },
+        error: function(jqXHR, exception) {
+            let message = "";
+
+            if (exception === "timeout") {
+                message = "Превышено время ожидания.";
+            } else if (exception === "abort") {
+                message = "Запрос прерван.";
+            } else if (jqXHR.status === 0) {
+                message = "Не удалось выполнить запрос. Попробуйте позже.";
+            } else if (jqXHR.status === 500) {
+                message = "Ошибка сервера.";
+            } else {
+                message = "Неизвестная ошибка.";
+            }
+
+            $("#graph").html(
+                "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
+                "    <p>" + message + "</p>" +
+                "</div>"
+            );
         }
     });
 
