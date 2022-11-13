@@ -23,7 +23,15 @@ function updateGraph(is_authorized, csrftoken) {
             );
         },
         success: function(response) {
-            $("#graph").html(response);
+            if (response === "None") {
+                $("#graph").html(
+                    "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
+                    "    <p>Не удалось сгенерировать график.</p>" +
+                    "</div>"
+                );
+            }
+            else
+                $("#graph").html(response);
         },
         error: function(jqXHR, exception) {
             let message = "";
