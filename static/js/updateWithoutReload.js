@@ -1,4 +1,7 @@
 const current_url = window.location.href.toString().split(window.location.host)[1];
+let graph_request;
+let preset_request;
+let history_request;
 
 $(document).on("submit", function(event) {
     event.preventDefault();
@@ -7,7 +10,11 @@ $(document).on("submit", function(event) {
 function updateGraph(is_authorized, csrftoken) {
     let request_data = getFormFields();
 
-    $.ajax({
+    if(graph_request && graph_request.readyState !== 4){
+        graph_request.abort();
+    }
+
+    graph_request = $.ajax({
         url: current_url + "update_graph/",
         type: "POST",
         headers: {
@@ -65,7 +72,11 @@ function savePreset(csrftoken) {
     let request_data = getFormFields();
     request_data["preset_operation"] = "save_preset";
 
-    $.ajax({
+    if(preset_request && preset_request.readyState !== 4){
+        preset_request.abort();
+    }
+
+    preset_request = $.ajax({
         url: current_url + "update_preset/",
         type: "POST",
         headers: {
@@ -84,7 +95,11 @@ function savePreset(csrftoken) {
 }
 
 function deletePreset(id, csrftoken) {
-    $.ajax({
+    if(preset_request && preset_request.readyState !== 4){
+        preset_request.abort();
+    }
+
+    preset_request = $.ajax({
         url: current_url + "update_preset/",
         type: "POST",
         headers: {
@@ -108,7 +123,11 @@ function deletePreset(id, csrftoken) {
 function updateHistory(csrftoken) {
     let request_data = getFormFields();
 
-    $.ajax({
+    if(history_request && history_request.readyState !== 4){
+        history_request.abort();
+    }
+
+    history_request = $.ajax({
         url: current_url + "update_history/",
         type: "POST",
         headers: {
