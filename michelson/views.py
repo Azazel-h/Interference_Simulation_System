@@ -85,7 +85,9 @@ def get_graph(wavelength, R, z1, z2, z3, z4, Rbs, tx, ty, f, size, N):
     # fig = px.axis('off')
     # fig = px.title('intensity pattern')
     fig = px.imshow(I)
-    config = {'displaylogo': False,  'modeBarButtonsToRemove': ['zoomOut2d', 'pan']}
+    config = {'displaylogo': False, 'scrollZoom' : False, 'modeBarButtonsToRemove': ['zoomOut2d', 'pan', 'zoom']}
+    fig.update_yaxes(fixedrange=True)
     graph = fig.to_html(full_html=False, config=config)
+    
   
     return graph

@@ -88,7 +88,12 @@ def get_graph(form_dict):
 
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
-    config = {'displaylogo': False,'scrollZoom': True, 'toImageButtonOptions': {'height': None, 'width': None}, 'modeBarButtonsToRemove': ['zoomOut2d', 'pan']}
+    config = {'displaylogo': False,'scrollZoom': False, 'Zoom': True, 'toImageButtonOptions': {'height': None, 'width': None}, 'modeBarButtonsToRemove': ['zoomOut2d', 'pan']}
+    fig = px.imshow(intensity, color_continuous_scale=['#000000',sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))])
+    #fig.update_xaxes( tickformatstops=[ dict(dtickrange=[1, 100], value = 100) ])
+    fig.update_yaxes(fixedrange=True)
+
+
     if laser_color == 'g':
         fig = px.imshow(intensity, color_continuous_scale=['#013b00', 'lime'])
     else:
