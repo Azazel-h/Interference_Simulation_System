@@ -1,50 +1,60 @@
 from django.shortcuts import render
 import plotly.express as px
 from LightPipes import *
+
 from .forms import GraphForm
+from .models import RequestM, PresetM
+
 import math
 from django import forms
 
 
-def index(request) -> render:
+def index_page(request) -> render:
     context = {}
-    if request.method == 'POST':
-        form = GraphForm(request.POST)
-        if form.is_valid():
-            wavelength = form.cleaned_data['wavelength'] * nm
-            z1 = form.cleaned_data['z1'] * cm
-            z2 = form.cleaned_data['z2'] * cm
-            Rbs = form.cleaned_data['Rbs']
-            tx = form.cleaned_data['tx'] * mrad
-            ty = form.cleaned_data['ty'] * mrad
-            f = form.cleaned_data['f'] * cm
-            size = form.cleaned_data['size'] * mm
-            N = form.cleaned_data['N']
+    form = GraphForm()
 
-            graph = get_graph(wavelength, z1, z2, Rbs, tx, ty, f, size, N)
-            context['graph'] = graph
-        else:
-            form = GraphForm()
-        context['form'] = form
+    if request.method == 'POST':
+        if 'send_request' in request.POST or 'save_preset' in request.POST:
+            form = GraphForm(request.POST)
+            if form.is_valid():
+                form_dict = dict(form.cleaned_data)
+                form_dict['user'] = request.user
+
+                if 'send_request' in request.POST:
+                    RequestM.objects.create(**form_dict)
+                    graph = get_graph(form_dict)
+                    context['graph'] = graph
+
+                elif 'save_preset' in request.POST:
+                    presets = PresetM.objects.filter(user=request.user.username)[::-1]
+                    if request.user.username and len(presets) < 5:
+                        PresetM.objects.create(**form_dict)
+
+        elif 'delete_preset' in request.POST:
+            PresetM.objects.get(id=request.POST['delete_preset']).delete()
+
+    presets = PresetM.objects.filter(user=request.user.username)[::-1]
+    user_requests = RequestM.objects.filter(user=request.user.username)[::-1]
+    context['presets'] = presets
+    context['array_of_reqs'] = user_requests[:5]
+    context['form'] = form
+
     return render(request, 'pages/michelson.html', context=context)
 
 
-def get_graph(wavelength, z1, z2, Rbs, tx, ty, f, size, N):
+def get_graph(form_dict):
     R = 3 * mm
     z3 = 3 * cm
     z4 = 5 * cm
-    # wavelength = 632.8 * nm  # wavelength of HeNe laser
-    # R = 3 * mm  # laser beam radius
-    # z1 = 8 * cm  # length of arm 1
-    # z2 = 7 * cm  # length of arm 2
-    # z3 = 3 * cm  # distance laser to beamsplitter
-    # z4 = 5 * cm  # distance beamsplitter to screen
-    # Rbs = 0.5  # reflection beam splitter
-    # tx = 1 * mrad
-    # ty = 0.0 * mrad  # tilt of mirror 1
-    # f = 50 * cm  # focal length of positive lens
-    # size = 10 * mm  # size of the grid
-    # N = 300  # number (NxN) of grid pixels
+    wavelength = form_dict['wavelength'] * nm
+    z1 = form_dict['z1'] * cm
+    z2 = form_dict['z2'] * cm
+    Rbs = form_dict['Rbs']
+    tx = form_dict['tx'] * mrad
+    ty = form_dict['ty'] * mrad
+    f = form_dict['f'] * cm
+    size = form_dict['size'] * mm
+    N = form_dict['N']
 
     # img=mpimg.imread('Michelson.png')
     # plt.imshow(img); plt.axis('off')
