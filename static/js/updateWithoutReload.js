@@ -15,7 +15,7 @@ function updateGraph(is_authorized, csrftoken) {
     }
 
     graph_request = $.ajax({
-        url: current_url + "update_graph/",
+        url: current_url + "update-graph/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -77,7 +77,7 @@ function savePreset(csrftoken) {
     }
 
     preset_request = $.ajax({
-        url: current_url + "update_preset/",
+        url: current_url + "update-preset/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -100,7 +100,7 @@ function deletePreset(id, csrftoken) {
     }
 
     preset_request = $.ajax({
-        url: current_url + "update_preset/",
+        url: current_url + "update-preset/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -128,7 +128,7 @@ function updateHistory(csrftoken) {
     }
 
     history_request = $.ajax({
-        url: current_url + "update_history/",
+        url: current_url + "update-history/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
