@@ -1,6 +1,6 @@
 <div class="container">
     {% if presets|length > 0 %}
-        <table class="table">
+        <table id="preset" class="table">
             <thead>
             <tr>
                 <th scope="col"></th>
@@ -11,7 +11,7 @@
                 <th scope="col">Коэффициент отражения</th>
                 <th scope="col">Коэффициент преломления</th>
                 <th scope="col">Размер рисунка</th>
-                <th scope="col">Значение интенсивности излучения лазера</th>
+                <th scope="col">Интенсивность излучения лазера</th>
                 <th scope="col">Разрешение</th>
             </tr>
             </thead>
@@ -20,18 +20,18 @@
                 <tr>
                     <th scope="row">
                         <div class="hstack gap-2">
-                        <button type="button" class="btn btn-outline-success btn-sm btn-block"
-                                onclick="autoFill({{ forloop.counter }})">
-                            <i class="bi bi-check2"></i>
-                        </button>
-
-                        <form method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="delete_preset" value="{{ req.id }}">
-                            <button type="submit" class="btn btn-outline-danger btn-sm btn-block">
-                                <i class="bi bi-x-lg"></i>
+                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFill({{ forloop.counter }}, 'preset')">
+                                <i class="bi bi-check2"></i>
                             </button>
-                        </form>
+
+                            <form>
+                                {% csrf_token %}
+
+                                <input type="hidden" value="{{ req.id }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm btn-block" onclick="deletePreset({{ req.id }}, '{{ csrf_token }}')">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </form>
                         </div>
                     </th>
                     <td id="wave-length-{{ forloop.counter }}">{{ req.wave_length }}</td>

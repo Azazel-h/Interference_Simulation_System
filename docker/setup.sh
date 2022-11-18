@@ -10,5 +10,6 @@ fi
 
 cd /project
 ./manage.py makemigrations fabry_perot
+./manage.py makemigrations michelson
 ./manage.py migrate
 ./manage.py runserver 0.0.0.0:8000

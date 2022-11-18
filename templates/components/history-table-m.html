@@ -1,7 +1,8 @@
 {% load tz %}
+
 <div class="container">
     {% if array_of_reqs|length > 0 %}
-        <table class="table">
+        <table id="history-table" class="table">
             <thead>
             <tr>
                 <th scope="col"></th>
@@ -17,26 +18,22 @@
             </tr>
             </thead>
             <tbody>
-            {% load tz %}
-            {% for req in array_of_reqs %}
-                <tr>
-                    <th scope="row">
-                        <button type="button"
-                                class="btn btn-outline-success btn-sm btn-block"
-                                onclick="autoFillM({{ forloop.counter }})">
-                            {% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
-                    </th>
-                    <td id="wavelength-{{ forloop.counter }}">{{ req.wavelength }}</td>
-                    <td id="z1-{{ forloop.counter }}">{{ req.z1 }}</td>
-                    <td id="z2-{{ forloop.counter }}">{{ req.z2 }}</td>
-                    <td id="Rbs-{{ forloop.counter }}">{{ req.Rbs }}</td>
-                    <td id="tx-{{ forloop.counter }}">{{ req.tx }}</td>
-                    <td id="ty-{{ forloop.counter }}">{{ req.ty }}</td>
-                    <td id="f-{{ forloop.counter }}">{{ req.f }}</td>
-                    <td id="size-{{ forloop.counter }}">{{ req.size }}</td>
-                    <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
-                </tr>
-            {% endfor %}
+                {% for req in array_of_reqs %}
+                    <tr>
+                        <th scope="row">
+                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFillM({{ forloop.counter }}, 'history-table')">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
+                        </th>
+                        <td id="wavelength-{{ forloop.counter }}">{{ req.wavelength }}</td>
+                        <td id="z1-{{ forloop.counter }}">{{ req.z1 }}</td>
+                        <td id="z2-{{ forloop.counter }}">{{ req.z2 }}</td>
+                        <td id="Rbs-{{ forloop.counter }}">{{ req.Rbs }}</td>
+                        <td id="tx-{{ forloop.counter }}">{{ req.tx }}</td>
+                        <td id="ty-{{ forloop.counter }}">{{ req.ty }}</td>
+                        <td id="f-{{ forloop.counter }}">{{ req.f }}</td>
+                        <td id="size-{{ forloop.counter }}">{{ req.size }}</td>
+                        <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     {% else %}
