@@ -71,7 +71,7 @@ def get_graph(form_dict: dict) -> str:
     wave_length = form_dict['wave_length'] * sll.nm
     glasses_distance = form_dict['glasses_distance'] * sll.mm
     focal_distance = form_dict['focal_distance'] * sll.mm
-    stroke_difference_hz = form_dict['stroke_difference'] * sll.Ghz
+    stroke_difference = form_dict['stroke_difference'] * sll.nm
     reflectivity = form_dict['reflectivity']
     refractive_index = form_dict['refractive_index']
     picture_size = form_dict['picture_size'] * sll.mm
@@ -79,13 +79,11 @@ def get_graph(form_dict: dict) -> str:
     n = form_dict['N']
 
     f = Begin(picture_size, wave_length, n)
-    intensity = Intensity(f, 1)
-
-    stroke_difference = stroke_difference_hz * wave_length * wave_length / sll.c
+    intensity = Intensity(f)
 
     k = 2 * math.pi / wave_length
     second_k = 2 * math.pi / (wave_length + stroke_difference)
-    fineness = 4.0 * reflectivity / math.pow(1.0 - reflectivity, 2)
+    fineness = 4.0 * reflectivity / (1.0 - reflectivity)
 
     step = picture_size / n / mm
     for i in range(1, n):
@@ -100,9 +98,9 @@ def get_graph(form_dict: dict) -> str:
             theta = radius / focal_distance
 
             delta = 2 * k * refractive_index * glasses_distance * math.cos(theta)
-            light_intensity = incident_light_intensity / (1 + fineness * math.pow(math.sin(delta / 2), 2))
+            light_intensity = 1 / (1 + fineness * math.pow(math.sin(delta / 2), 2))
             delta = 2 * second_k * refractive_index * glasses_distance * math.cos(theta)
-            light_intensity += incident_light_intensity / (1 + fineness * math.pow(math.sin(delta / 2), 2))
+            light_intensity += 1 / (1 + fineness * math.pow(math.sin(delta / 2), 2))
 
             intensity[i][j] = light_intensity
 
