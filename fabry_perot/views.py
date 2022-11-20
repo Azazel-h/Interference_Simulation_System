@@ -97,10 +97,10 @@ def get_graph(form_dict: dict) -> str:
             radius = math.sqrt(x * x + y * y)
             theta = radius / focal_distance
 
-            delta = 2 * k * refractive_index * glasses_distance * math.cos(theta)
-            light_intensity = 1 / (1 + fineness * math.pow(math.sin(delta / 2), 2))
-            delta = 2 * second_k * refractive_index * glasses_distance * math.cos(theta)
-            light_intensity += 1 / (1 + fineness * math.pow(math.sin(delta / 2), 2))
+            delta = k * refractive_index * glasses_distance * math.cos(theta)
+            light_intensity = 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
+            delta = second_k * refractive_index * glasses_distance * math.cos(theta)
+            light_intensity += 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
 
             intensity[i][j] = light_intensity
 
