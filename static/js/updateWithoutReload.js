@@ -21,7 +21,6 @@ function updateGraph(is_authorized, csrftoken) {
             "X-CSRFToken": csrftoken
         },
         data: request_data,
-        timeout: 10000,
         beforeSend: function() {
             $("#graph").html(
                 "<svg class=\"spinner\" viewBox=\"0 0 50 50\">" +
@@ -41,25 +40,7 @@ function updateGraph(is_authorized, csrftoken) {
                 $("#graph").html(response);
         },
         error: function(jqXHR, exception) {
-            let message = "";
-
-            if (exception === "timeout") {
-                message = "Превышено время ожидания.";
-            } else if (exception === "abort") {
-                message = "Запрос прерван.";
-            } else if (jqXHR.status === 0) {
-                message = "Не удалось выполнить запрос. Попробуйте позже.";
-            } else if (jqXHR.status === 500) {
-                message = "Ошибка сервера.";
-            } else {
-                message = "Неизвестная ошибка.";
-            }
-
-            $("#graph").html(
-                "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
-                "    <p>" + message + "</p>" +
-                "</div>"
-            );
+            $("#graph").html(processError(jqXHR, exception));
         }
     });
 
@@ -150,4 +131,28 @@ function getFormFields() {
     });
 
     return request_data;
+}
+
+function processError(jqXHR, exception) {
+    let message;
+
+    if (exception === "abort") {
+        message = "Запрос прерван.";
+    } else if (exception === "parsererror") {
+        message = "Ошибка чтения ответа сервера.";
+    } else if (exception === "timeout") {
+        message = "Превышено время ожидания.";
+    } else if (jqXHR.status === 0) {
+        message = "Не удалось выполнить запрос. Попробуйте позже.";
+    } else if (jqXHR.status === 404) {
+        message = 'Запрашиваемая страница не найдена.';
+    } else if (jqXHR.status === 500) {
+        message = "Ошибка сервера.";
+    } else {
+        message = "Неизвестная ошибка.";
+    }
+
+    return "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
+           "    <p>" + message + "</p>" +
+           "</div>"
 }
