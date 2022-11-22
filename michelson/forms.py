@@ -1,12 +1,15 @@
 from django import forms
 
+from interferometers.widgets import RangeInput
+
 
 class GraphForm(forms.Form):
     wavelength = forms.FloatField(
         label='Длина волны гелий-неонового лазера [\\(нм\\)]',
         min_value=200,
         max_value=800,
-        initial=632.8)
+        initial=632.8,
+        widget=RangeInput(min_value=200, max_value=800, step=0.1))
     z1 = forms.FloatField(
         label='Длина первого плеча [\\(см\\)]',
         min_value=0,
