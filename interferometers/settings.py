@@ -73,7 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'interferometers.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -84,6 +83,8 @@ DATABASES = {
         'CONN_MAX_AGE': 600,
     }
 }
+
+# Sessions
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
@@ -106,6 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# CAS config
+
 CAS_SERVER_URL = 'https://proxy.bmstu.ru:8443/cas/'
 CAS_VERSION = '3'
 
@@ -119,7 +122,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/

@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  interferometer:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: >
+      sh -c "./manage.py makemigrations fabry_perot &&
+             ./manage.py makemigrations michelson &&
+             ./manage.py migrate &&
+             ./manage.py runserver 0.0.0.0:8000"
