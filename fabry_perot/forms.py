@@ -34,4 +34,5 @@ class GraphForm(forms.Form):
                                                 initial=1000)
     N = forms.IntegerField(label='Разрешение',
                            min_value=1,
+                           max_value=4000,
                            initial=500)
