@@ -88,10 +88,10 @@ def get_graph(form_dict: dict) -> str:
     fineness = 4.0 * reflectivity / math.pow(1.0 - reflectivity, 2)
 
     step = picture_size / n / mm
-    for i in range(1, n):
-        x_ray = i * step
-        for j in range(1, n):
-            y_ray = j * step
+    for i in range(0, n):
+        x_ray = (i + 0.5) * step
+        for j in range(0, n):
+            y_ray = (j + 0.5) * step
 
             x = x_ray * mm - picture_size / 2
             y = y_ray * mm - picture_size / 2
