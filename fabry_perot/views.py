@@ -21,8 +21,8 @@ def index_page(request: WSGIRequest) -> HttpResponse:
     }
 
     if request.user.is_authenticated:
-        context.update({'presets': PresetFP.objects.filter(user=request.user.username)[::-1]})
-        context.update({'array_of_reqs': RequestFP.objects.filter(user=request.user.username)[:5:-1]})
+        context['presets'] = PresetFP.objects.filter(user=request.user.username)[::-1]
+        context['array_of_reqs'] = RequestFP.objects.filter(user=request.user.username)[:5:-1]
 
     return render(request, 'pages/fabry-perot.html', context=context)
 
@@ -48,9 +48,9 @@ def update_history(request: WSGIRequest) -> HttpResponse:
 
     if request.user.is_authenticated and form.is_valid():
         form_dict = dict(form.cleaned_data)
-        form_dict.update({'user': request.user.username})
+        form_dict['user'] = request.user.username
         RequestFP.objects.create(**form_dict)
-        context.update({'array_of_reqs': RequestFP.objects.filter(user=request.user.username)[:5:-1]})
+        context['array_of_reqs'] = RequestFP.objects.filter(user=request.user.username)[:5:-1]
 
     return render(request, 'components/history-table.html', context=context)
 
@@ -67,14 +67,14 @@ def update_preset(request: WSGIRequest) -> HttpResponse:
 
             if form.is_valid():
                 form_dict = dict(form.cleaned_data)
-                form_dict.update({'user': request.user.username})
+                form_dict['user'] = request.user.username
 
                 if len(PresetFP.objects.filter(user=request.user.username)) < 5:
                     PresetFP.objects.create(**form_dict)
         elif request.POST.get('preset_operation') == 'delete_preset':
             PresetFP.objects.get(id=request.POST.get('delete_preset')).delete()
 
-        context.update({'presets': PresetFP.objects.filter(user=request.user.username)[::-1]})
+        context['presets'] = PresetFP.objects.filter(user=request.user.username)[::-1]
 
     return render(request, 'components/presets-table.html', context=context)
 
