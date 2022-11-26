@@ -116,8 +116,10 @@ def get_graph(form_dict):
     #              (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
     # fig = px.axis('off')
     # fig = px.title('intensity pattern')
+    config = {'displaylogo': False,'toImageButtonOptions': {'height': None, 'width': None}}
     fig = px.imshow(I)
+    fig.update_yaxes(fixedrange=True)
 
     # print(px.colors.sequential.Inferno)
-    graph = fig.to_html(full_html=False)
+    graph = fig.to_html(full_html=False, config = config)
     return graph
