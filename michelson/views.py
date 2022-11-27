@@ -13,14 +13,14 @@ from .models import RequestM, PresetM
 # /michelson
 def index_page(request: WSGIRequest) -> HttpResponse:
     context = {
-        'presets': list(),
-        'array_of_reqs': list(),
+        'presets': [],
+        'array_of_reqs': [],
         'form': GraphForm()
     }
 
     if request.user.is_authenticated:
         context['presets'] = PresetM.objects.filter(user=request.user.username)[::-1]
-        context['array_of_reqs'] = RequestM.objects.filter(user=request.user.username)[:5:-1]
+        context['array_of_reqs'] = RequestM.objects.filter(user=request.user.username)[::-1][:5]
 
     return render(request, 'pages/michelson.html', context=context)
 
@@ -40,7 +40,7 @@ def update_graph(request: WSGIRequest) -> Union[HttpResponse, None]:
 # /michelson/update_history
 def update_history(request: WSGIRequest) -> HttpResponse:
     context = {
-        'array_of_reqs': list()
+        'array_of_reqs': []
     }
     form = GraphForm(request.POST)
 
@@ -48,7 +48,7 @@ def update_history(request: WSGIRequest) -> HttpResponse:
         form_dict = dict(form.cleaned_data)
         form_dict['user'] = request.user.username
         RequestM.objects.create(**form_dict)
-        context['array_of_reqs'] = RequestM.objects.filter(user=request.user.username)[:5:-1]
+        context['array_of_reqs'] = RequestM.objects.filter(user=request.user.username)[::-1][:5]
 
     return render(request, 'components/history-table-m.html', context=context)
 
@@ -56,7 +56,7 @@ def update_history(request: WSGIRequest) -> HttpResponse:
 # /michelson/update_preset
 def update_preset(request: WSGIRequest) -> HttpResponse:
     context = {
-        'presets': list()
+        'presets': []
     }
 
     if request.user.is_authenticated:
