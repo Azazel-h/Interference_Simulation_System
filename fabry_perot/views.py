@@ -87,7 +87,6 @@ def get_graph(form_dict: dict) -> str:
     reflectivity = form_dict['reflectivity']
     refractive_index = form_dict['refractive_index']
     picture_size = form_dict['picture_size'] * sll.mm
-    incident_light_intensity = form_dict['incident_light_intensity'] * sll.W / (sll.cm * sll.cm)
     n = form_dict['N']
 
     f = Begin(picture_size, wave_length, n)
@@ -119,7 +118,6 @@ def get_graph(form_dict: dict) -> str:
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
     config = {'displaylogo': False,'toImageButtonOptions': {'height': None, 'width': None}}
-    
 
     fig = px.imshow(intensity,
                     color_continuous_scale=['#000000',

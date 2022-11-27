@@ -10,7 +10,6 @@ class RequestFP(models.Model):
     reflectivity = models.FloatField(default=0)
     refractive_index = models.FloatField(default=0)
     picture_size = models.FloatField(default=0)
-    incident_light_intensity = models.FloatField(default=0)
     N = models.IntegerField()
     request_time = models.DateTimeField(auto_now_add=True)
 
@@ -24,5 +23,4 @@ class PresetFP(models.Model):
     reflectivity = models.FloatField(default=0)
     refractive_index = models.FloatField(default=0)
     picture_size = models.FloatField(default=0)
-    incident_light_intensity = models.FloatField(default=0)
     N = models.IntegerField()
