@@ -1,4 +1,5 @@
 from django import forms
+
 from interferometers.widgets import RangeInput
 
 
@@ -14,7 +15,7 @@ class GraphForm(forms.Form):
     focal_distance = forms.FloatField(label='Фокусное расстояние линзы [\\(мм\\)]',
                                       min_value=0,
                                       initial=100)
-    stroke_difference = forms.FloatField(label='Ширина спектральной линии [\\(ГГц\\)]',
+    stroke_difference = forms.FloatField(label='Разница хода [\\(нм\\)]',
                                          min_value=0,
                                          initial=0)
     reflectivity = forms.FloatField(label='Коэффициент отражения',
@@ -33,4 +34,5 @@ class GraphForm(forms.Form):
                                                 initial=1000)
     N = forms.IntegerField(label='Разрешение',
                            min_value=1,
+                           max_value=4000,
                            initial=500)

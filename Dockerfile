@@ -1,11 +1,9 @@
 FROM python
 
-COPY requirements.txt req.txt
-RUN pip3 install -r req.txt
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED 1
 
-COPY docker/setup.sh setup.sh
-RUN chmod +x setup.sh
-
-EXPOSE 8000
-
-CMD ./setup.sh
+WORKDIR /app
+COPY requirements.txt /app
+RUN pip3 install -r requirements.txt
+COPY . /app
