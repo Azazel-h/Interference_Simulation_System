@@ -15,14 +15,14 @@ from .models import RequestFP, PresetFP
 # /fabry_perot
 def index_page(request: WSGIRequest) -> HttpResponse:
     context = {
-        'presets': list(),
-        'array_of_reqs': list(),
+        'presets': [],
+        'array_of_reqs': [],
         'form': GraphForm()
     }
 
     if request.user.is_authenticated:
         context['presets'] = PresetFP.objects.filter(user=request.user.username)[::-1]
-        context['array_of_reqs'] = RequestFP.objects.filter(user=request.user.username)[:5:-1]
+        context['array_of_reqs'] = RequestFP.objects.filter(user=request.user.username)[::-1][:5]
 
     return render(request, 'pages/fabry-perot.html', context=context)
 
@@ -42,7 +42,7 @@ def update_graph(request: WSGIRequest) -> Union[HttpResponse, None]:
 # /fabry_perot/update_history
 def update_history(request: WSGIRequest) -> HttpResponse:
     context = {
-        'array_of_reqs': list()
+        'array_of_reqs': []
     }
     form = GraphForm(request.POST)
 
@@ -50,7 +50,7 @@ def update_history(request: WSGIRequest) -> HttpResponse:
         form_dict = dict(form.cleaned_data)
         form_dict['user'] = request.user.username
         RequestFP.objects.create(**form_dict)
-        context['array_of_reqs'] = RequestFP.objects.filter(user=request.user.username)[:5:-1]
+        context['array_of_reqs'] = RequestFP.objects.filter(user=request.user.username)[::-1][:5]
 
     return render(request, 'components/history-table.html', context=context)
 
@@ -58,7 +58,7 @@ def update_history(request: WSGIRequest) -> HttpResponse:
 # /fabry_perot/update_preset
 def update_preset(request: WSGIRequest) -> HttpResponse:
     context = {
-        'presets': list()
+        'presets': []
     }
 
     if request.user.is_authenticated:
@@ -119,7 +119,6 @@ def get_graph(form_dict: dict) -> str:
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
     config = {'displaylogo': False,'toImageButtonOptions': {'height': None, 'width': None}}
-    
 
     fig = px.imshow(intensity,
                     color_continuous_scale=['#000000',
