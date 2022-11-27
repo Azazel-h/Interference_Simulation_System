@@ -4,6 +4,7 @@ from typing import Union
 import plotly.express as px
 import sepl_light_lib as sll
 from LightPipes import *
+from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -12,59 +13,70 @@ from .models import RequestFP, PresetFP
 
 
 # /fabry_perot
-def index_page(request) -> Union[HttpResponse, None]:
+def index_page(request: WSGIRequest) -> HttpResponse:
     context = {
-        'presets': PresetFP.objects.filter(user=request.user.username)[::-1],
-        'array_of_reqs': RequestFP.objects.filter(user=request.user.username)[::-1][:5],
+        'presets': list(),
+        'array_of_reqs': list(),
         'form': GraphForm()
     }
+
+    if request.user.is_authenticated:
+        context['presets'] = PresetFP.objects.filter(user=request.user.username)[::-1]
+        context['array_of_reqs'] = RequestFP.objects.filter(user=request.user.username)[:5:-1]
 
     return render(request, 'pages/fabry-perot.html', context=context)
 
 
 # /fabry_perot/update_graph
-def update_graph(request) -> Union[HttpResponse, None]:
+def update_graph(request: WSGIRequest) -> Union[HttpResponse, None]:
     graph = None
     form = GraphForm(request.POST)
 
     if form.is_valid():
         form_dict = dict(form.cleaned_data)
-        form_dict['user'] = request.user
         graph = get_graph(form_dict)
 
     return HttpResponse(graph)
 
 
 # /fabry_perot/update_history
-def update_history(request) -> Union[HttpResponse, None]:
+def update_history(request: WSGIRequest) -> HttpResponse:
+    context = {
+        'array_of_reqs': list()
+    }
     form = GraphForm(request.POST)
 
-    if form.is_valid():
+    if request.user.is_authenticated and form.is_valid():
         form_dict = dict(form.cleaned_data)
-        form_dict['user'] = request.user
+        form_dict['user'] = request.user.username
         RequestFP.objects.create(**form_dict)
+        context['array_of_reqs'] = RequestFP.objects.filter(user=request.user.username)[:5:-1]
 
-    return render(request, 'components/history-table.html',
-                  context={'array_of_reqs': RequestFP.objects.filter(user=request.user.username)[::-1][:5]})
+    return render(request, 'components/history-table.html', context=context)
 
 
 # /fabry_perot/update_preset
-def update_preset(request) -> Union[HttpResponse, None]:
-    if request.POST['preset_operation'] == 'save_preset':
-        form = GraphForm(request.POST)
+def update_preset(request: WSGIRequest) -> HttpResponse:
+    context = {
+        'presets': list()
+    }
 
-        if form.is_valid():
-            form_dict = dict(form.cleaned_data)
-            form_dict['user'] = request.user
+    if request.user.is_authenticated:
+        if request.POST.get('preset_operation') == 'save_preset':
+            form = GraphForm(request.POST)
 
-            presets = PresetFP.objects.filter(user=request.user.username)[::-1]
-            if request.user.username and len(presets) < 5:
-                PresetFP.objects.create(**form_dict)
-    elif request.POST['preset_operation'] == 'delete_preset':
-        PresetFP.objects.get(id=request.POST['delete_preset']).delete()
+            if form.is_valid():
+                form_dict = dict(form.cleaned_data)
+                form_dict['user'] = request.user.username
 
-    return render(request, 'components/presets-table.html',
-                  context={'presets': PresetFP.objects.filter(user=request.user.username)[::-1]})
+                if len(PresetFP.objects.filter(user=request.user.username)) < 5:
+                    PresetFP.objects.create(**form_dict)
+        elif request.POST.get('preset_operation') == 'delete_preset':
+            PresetFP.objects.get(id=request.POST.get('delete_preset')).delete()
+
+        context['presets'] = PresetFP.objects.filter(user=request.user.username)[::-1]
+
+    return render(request, 'components/presets-table.html', context=context)
 
 
 def get_graph(form_dict: dict) -> str:
