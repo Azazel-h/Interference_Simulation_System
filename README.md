@@ -1,12 +1,9 @@
 # Fabry-Perot_Interferometer
 
-Как запустить приложение:
-1. Поставить `docker` и `docker-compose`
-2. Установить образ python командой
-```
-$ docker pull python
-```
-3. Запустить контейнер
+### Как развернуть приложение:
+1. Поставить `docker` и `docker-compose` по инструкции из оффициальной документации
+3. Запустить контейнер через docker-compose
 ```
 $ docker-compose up
 ```
+4. Приложение развернется на [localhost:8000](http://localhost:8000/)
