@@ -13,7 +13,6 @@
                 <th scope="col">Коэффициент отражения</th>
                 <th scope="col">Коэффициент преломления</th>
                 <th scope="col">Размер рисунка</th>
-                <th scope="col">Интенсивность излучения лазера</th>
                 <th scope="col">Разрешение</th>
             </tr>
             </thead>
@@ -30,7 +29,6 @@
                         <td id="reflectivity-{{ forloop.counter }}">{{ req.reflectivity }}</td>
                         <td id="refractive-index-{{ forloop.counter }}">{{ req.refractive_index }}</td>
                         <td id="picture-size-{{ forloop.counter }}">{{ req.picture_size }}</td>
-                        <td id="incident-light-intensive-{{ forloop.counter }}">{{ req.incident_light_intensity }}</td>
                         <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
                     </tr>
                 {% endfor %}

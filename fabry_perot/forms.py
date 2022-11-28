@@ -19,19 +19,16 @@ class GraphForm(forms.Form):
                                          min_value=0,
                                          initial=0)
     reflectivity = forms.FloatField(label='Коэффициент отражения',
-                                    min_value=0,
+                                    min_value=0.0001,
                                     max_value=0.9999,
                                     initial=0.7,
-                                    widget=RangeInput(min_value=0, max_value=0.9999, step=0.0001))
+                                    widget=RangeInput(min_value=0.0001, max_value=0.9999, step=0.0001))
     refractive_index = forms.FloatField(label='Коэффициент преломления',
                                         min_value=1,
                                         initial=1)
     picture_size = forms.FloatField(label='Размер рисунка [\\(мм\\)]',
                                     min_value=0,
                                     initial=5)
-    incident_light_intensity = forms.FloatField(label='Интенсивность излучения лазера [\\(\\frac{W}{см^{2}}\\)]',
-                                                min_value=0,
-                                                initial=1000)
     N = forms.IntegerField(label='Разрешение',
                            min_value=1,
                            max_value=4000,
