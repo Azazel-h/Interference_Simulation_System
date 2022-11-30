@@ -1,0 +1,35 @@
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+    <div class="card card-body">
+        <div id="interferometer" class="row align-items-center">
+            <div id="graph" class="col-md-8">
+                <div class="alert alert-secondary text-center" role="alert">
+                    <p>Предоставьте требуемые данные в указанную форму.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <form>
+                    {% csrf_token %}
+
+                    {{ form | crispy }}
+
+                    <div class="mt-4 text-center">
+                        {% if user.is_authenticated %}
+                            <input type="submit" value="Посмотреть кольца" class="btn btn-success" onclick="updateGraph(true, '{{ csrf_token }}')">
+                            {% if presets|length < 5 %}
+                                <input type="submit" id="save_preset" value="Сохранить данные" class="btn btn-success" onclick="savePreset('{{ csrf_token }}')">
+                            {% else %}
+                                <input type="submit" id="save_preset" value="Сохранить данные" class="btn btn-success" onclick="savePreset('{{ csrf_token }}')" disabled>
+                            {% endif %}
+                        {% else %}
+                            <input type="submit" value="Посмотреть кольца" class="btn btn-success" onclick="updateGraph(false, '{{ csrf_token }}')">
+                            <input type="submit" id="save_preset" value="Сохранить данные" class="btn btn-success" onclick="savePreset('{{ csrf_token }}')" disabled>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
