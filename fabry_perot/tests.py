@@ -10,6 +10,32 @@ class TestPage(TestCase):
         if content:
             self.assertEqual(response.content, content)
 
+    def assert_saves(self, data, code, content=None):
+        data["preset_operation"] = "save_preset"
+        url = reverse('index') + 'update-preset/'
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, code)
+        if content:
+            self.assertContains(response, content)
+
+    def assert_deletes(self, preset_id, code, content=None):
+        data = {
+            "delete_preset": preset_id,
+            "preset_operation": "delete_preset"
+        }
+        url = reverse('index') + 'update-preset/'
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, code)
+        if content:
+            self.assertContains(response, content)
+
+    def assert_update_history(self, data, code, content=None):
+        url = reverse('index') + 'update-history/'
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, code)
+        if content:
+            self.assertContains(response, content)
+
     def get_data(self, **kwargs):
         data = self.basic_data.copy()
         data.update(kwargs)
@@ -80,3 +106,14 @@ class TestPage(TestCase):
     def test_interferometer_generation_with_wrong_refractive_index(self):
         request_data = self.get_data(refractive_index=-1)
         self.assert_generates(request_data, 200, b'None')
+
+    def test_save_preset_not_saves_without_auth(self):
+        request_data = self.get_data()
+        self.assert_saves(self.get_data(), 200, 'Вы пока не сохранили ни одного набора данных.'.encode('utf-8'))
+        self.assert_saves(self.get_data(), 200, 'Вы пока не сохранили ни одного набора данных.'.encode('utf-8'))
+
+    def test_delete_empty_returns_empty(self):
+        self.assert_deletes(0, 200, 'Вы пока не сохранили ни одного набора данных.'.encode('utf-8'))
+
+    def test_update_history_returns_empty(self):
+        self.assert_update_history(self.get_data(), 200, 'Вы пока не сделали ни одного запроса.'.encode('utf-8'))
