@@ -1,6 +1,7 @@
 import math
 from typing import Union
 
+import numpy as np
 import plotly.express as px
 import sepl_light_lib as sll
 from LightPipes import *
@@ -91,15 +92,16 @@ def get_graph(form_dict: dict) -> str:
 
     f = Begin(picture_size, wave_length, n)
     intensity = Intensity(f)
-
     k = 2 * math.pi / wave_length
     second_k = 2 * math.pi / (wave_length + stroke_difference)
     fineness = 4.0 * reflectivity / (1.0 - reflectivity)
 
     step = picture_size / n / mm
-    for i in range(0, n):
+    matrix_center = (n + 1) // 2
+
+    for i in range(0, matrix_center):
         x_ray = (i + 0.5) * step
-        for j in range(0, n):
+        for j in range(0, matrix_center):
             y_ray = (j + 0.5) * step
 
             x = x_ray * mm - picture_size / 2
@@ -115,9 +117,13 @@ def get_graph(form_dict: dict) -> str:
 
             intensity[i][j] = light_intensity
 
+    intensity[matrix_center:n, 0:matrix_center] = np.rot90(intensity[0:matrix_center, 0:matrix_center])
+    intensity[matrix_center:n, matrix_center:n] = np.rot90(intensity[matrix_center:n, 0:matrix_center])
+    intensity[0:matrix_center, matrix_center:n] = np.rot90(intensity[matrix_center:n, matrix_center:n])
+
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
-    config = {'displaylogo': False,'toImageButtonOptions': {'height': None, 'width': None}}
+    config = {'displaylogo': False, 'toImageButtonOptions': {'height': None, 'width': None}}
 
     fig = px.imshow(intensity,
                     color_continuous_scale=['#000000',
