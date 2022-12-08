@@ -125,6 +125,6 @@ def get_graph(form_dict: dict) -> str:
     fig.update_yaxes(fixedrange=True)
 
     # print(px.colors.sequential.Inferno)
-    graph = fig.to_html(full_html=False, config=config)
+    graph = fig.to_html(config=config, include_plotlyjs=False, full_html=False)
 
     return graph
