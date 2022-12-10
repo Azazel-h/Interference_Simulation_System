@@ -4,6 +4,7 @@ from typing import Union
 import numpy as np
 import plotly.express as px
 import sepl_light_lib as sll
+import time
 from LightPipes import *
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
@@ -101,7 +102,7 @@ def get_graph(form_dict: dict) -> str:
 
     for i in range(0, matrix_center):
         x_ray = (i + 0.5) * step
-        for j in range(0, matrix_center):
+        for j in range(i, matrix_center):
             y_ray = (j + 0.5) * step
 
             x = x_ray * mm - picture_size / 2
@@ -115,11 +116,10 @@ def get_graph(form_dict: dict) -> str:
             delta = second_k * refractive_index * glasses_distance * math.cos(theta)
             light_intensity += 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
 
-            intensity[i][j] = light_intensity
+            intensity[i][j] = intensity[j][i] = light_intensity
 
-    intensity[matrix_center:n, 0:matrix_center] = np.rot90(intensity[0:matrix_center, 0:matrix_center])
-    intensity[matrix_center:n, matrix_center:n] = np.rot90(intensity[matrix_center:n, 0:matrix_center])
-    intensity[0:matrix_center, matrix_center:n] = np.rot90(intensity[matrix_center:n, matrix_center:n])
+    intensity[n - matrix_center:n, 0:matrix_center] = np.rot90(intensity[0:matrix_center, 0:matrix_center])
+    intensity[0:n, n - matrix_center:n] = np.rot90(intensity[0:n, 0:matrix_center], 2)
 
     # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
     #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
