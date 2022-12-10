@@ -4,7 +4,6 @@ from typing import Union
 import numpy as np
 import plotly.express as px
 import sepl_light_lib as sll
-import time
 from LightPipes import *
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
