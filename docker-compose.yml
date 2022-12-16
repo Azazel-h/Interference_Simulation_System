@@ -9,7 +9,10 @@ services:
     volumes:
       - .:/app
     command: >
-      sh -c "python3 ./manage.py makemigrations fabry_perot &&
-             python3 ./manage.py makemigrations michelson &&
+      sh -c "python3 ./manage.py makemigrations &&
              python3 ./manage.py migrate &&
              python3 ./manage.py runserver 0.0.0.0:8000"
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
