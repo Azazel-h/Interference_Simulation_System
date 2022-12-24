@@ -1,5 +1,4 @@
 from django import forms
-
 from interferometers.widgets import RangeInput
 
 
@@ -9,7 +8,7 @@ class GraphForm(forms.Form):
                                    max_value=780,
                                    initial=630,
                                    widget=RangeInput(min_value=380, max_value=780, step=1))
-    glasses_distance = forms.FloatField(label='Расстояние между стеклами [\\(мм\\)]',
+    glasses_distance = forms.FloatField(label='Расстояние между зеркалами [\\(мм\\)]',
                                         min_value=0,
                                         initial=15)
     focal_distance = forms.FloatField(label='Фокусное расстояние линзы [\\(мм\\)]',
@@ -29,7 +28,7 @@ class GraphForm(forms.Form):
     picture_size = forms.FloatField(label='Размер рисунка [\\(мм\\)]',
                                     min_value=0,
                                     initial=5)
-    N = forms.IntegerField(label='Разрешение',
+    N = forms.IntegerField(label='Разрешение на экране в пикселях',
                            min_value=1,
                            max_value=4000,
                            initial=500)

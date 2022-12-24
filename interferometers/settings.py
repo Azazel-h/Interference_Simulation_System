@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import redis
 from secret_key_generator import secret_key_generator
 
 SECRET_KEY = secret_key_generator.generate()
@@ -14,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -71,6 +72,27 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'interferometers.wsgi.application'
+
+# Cache
+
+REDIS_CON = redis.Redis("redis")
+
+try:
+    REDIS_CON.ping()
+
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://redis/1",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    }
+except redis.ConnectionError:
+    pass
+finally:
+    REDIS_CON.close()
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
