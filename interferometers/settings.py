@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'fabry_perot',
     'michelson',
     'crispy_forms',
+    'crispy_bootstrap4',
     'django_cas_ng'
 ]
 
