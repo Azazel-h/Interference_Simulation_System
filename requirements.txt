@@ -1,3 +1,4 @@
+crispy_bootstrap4==2022.1
 Django==4.1.7
 django-cas-ng==4.3.0
 django-crispy-forms==2.0
