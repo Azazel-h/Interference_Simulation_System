@@ -15,7 +15,7 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% block main_tab %}
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">
+                        <a class="nav-link" href="/">
                             Главная
                         </a>
                     </li>
@@ -36,12 +36,12 @@
                     {% block account_tab %}
                         <li class="nav-item">
                             <span class="navbar-text">{{ user.username }}</span>
-                            <a class="d-inline nav-link" href="/accounts/logout"> Выйти </a>
+                            <a class="d-inline nav-link" href="/logout"> Выйти </a>
                         </li>
                     {% endblock %}
                 {% else %}
                     {% block login_tab %}
-                        <li class="nav-item"><a class="nav-link" href="/accounts/login"> Войти </a></li>
+                        <li class="nav-item"><a class="nav-link" href="/login"> Войти </a></li>
                     {% endblock %}
                 {% endif %}
             </ul>
