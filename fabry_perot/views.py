@@ -1,11 +1,10 @@
 import math
-from typing import Union
+from typing import Optional
 
 import numpy as np
 import plotly.express as px
 import sepl_light_lib as sll
 from LightPipes import *
-from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -14,7 +13,7 @@ from .models import RequestFP, PresetFP
 
 
 # /fabry_perot
-def index_page(request: WSGIRequest) -> HttpResponse:
+def index_page(request) -> HttpResponse:
     context = {
         'presets': [],
         'array_of_reqs': [],
@@ -29,7 +28,7 @@ def index_page(request: WSGIRequest) -> HttpResponse:
 
 
 # /fabry_perot/update_graph
-def update_graph(request: WSGIRequest) -> Union[HttpResponse, None]:
+def update_graph(request) -> Optional[HttpResponse]:
     graph = None
     form = GraphForm(request.POST)
 
@@ -41,7 +40,7 @@ def update_graph(request: WSGIRequest) -> Union[HttpResponse, None]:
 
 
 # /fabry_perot/update_history
-def update_history(request: WSGIRequest) -> HttpResponse:
+def update_history(request) -> HttpResponse:
     context = {
         'array_of_reqs': []
     }
@@ -57,7 +56,7 @@ def update_history(request: WSGIRequest) -> HttpResponse:
 
 
 # /fabry_perot/update_preset
-def update_preset(request: WSGIRequest) -> HttpResponse:
+def update_preset(request) -> HttpResponse:
     context = {
         'presets': []
     }
@@ -115,21 +114,15 @@ def get_graph(form_dict: dict) -> str:
             delta = second_k * refractive_index * glasses_distance * math.cos(theta)
             light_intensity += 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
 
-            intensity[i][j] = intensity[j][i] = light_intensity
+            intensity[i][j] = intensity[j][i] = round(light_intensity, 6)
 
     intensity[n - matrix_center:n, 0:matrix_center] = np.rot90(intensity[0:matrix_center, 0:matrix_center])
     intensity[0:n, n - matrix_center:n] = np.rot90(intensity[0:n, 0:matrix_center], 2)
 
-    # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
-    #                (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
-    config = {'displaylogo': False, 'toImageButtonOptions': {'height': None, 'width': None}}
-
-    fig = px.imshow(intensity,
-                    color_continuous_scale=['#000000',
-                                            sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))])
+    laser_color = sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))
+    fig = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
     fig.update_yaxes(fixedrange=True)
 
-    # print(px.colors.sequential.Inferno)
-    graph = fig.to_html(config=config, include_plotlyjs=False, full_html=False)
+    config = {'displaylogo': False, 'toImageButtonOptions': {'height': None, 'width': None}}
 
-    return graph
+    return fig.to_html(config=config, include_plotlyjs=False, full_html=False)

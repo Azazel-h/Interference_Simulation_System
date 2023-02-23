@@ -1,6 +1,7 @@
 from typing import Union
 
 import plotly.express as px
+import sepl_light_lib as sll
 from LightPipes import *
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
@@ -11,7 +12,7 @@ from .models import RequestM, PresetM
 
 
 # /michelson
-def index_page(request: WSGIRequest) -> HttpResponse:
+def index_page(request) -> HttpResponse:
     context = {
         'presets': [],
         'array_of_reqs': [],
@@ -26,7 +27,7 @@ def index_page(request: WSGIRequest) -> HttpResponse:
 
 
 # /michelson/update_graph
-def update_graph(request: WSGIRequest) -> Union[HttpResponse, None]:
+def update_graph(request) -> Union[HttpResponse, None]:
     graph = None
     form = GraphForm(request.POST)
 
@@ -38,7 +39,7 @@ def update_graph(request: WSGIRequest) -> Union[HttpResponse, None]:
 
 
 # /michelson/update_history
-def update_history(request: WSGIRequest) -> HttpResponse:
+def update_history(request) -> HttpResponse:
     context = {
         'array_of_reqs': []
     }
@@ -54,7 +55,7 @@ def update_history(request: WSGIRequest) -> HttpResponse:
 
 
 # /michelson/update_preset
-def update_preset(request: WSGIRequest) -> HttpResponse:
+def update_preset(request) -> HttpResponse:
     context = {
         'presets': []
     }
@@ -77,18 +78,18 @@ def update_preset(request: WSGIRequest) -> HttpResponse:
     return render(request, 'components/presets-table-m.html', context=context)
 
 
-def get_graph(form_dict):
-    R = 3 * mm
-    z3 = 3 * cm
-    z4 = 5 * cm
-    wavelength = form_dict['wavelength'] * nm
+def get_graph(form_dict) -> str:
+    R = 3 * sll.mm
+    z3 = 3 * sll.cm
+    z4 = 5 * sll.cm
+    wave_length = form_dict['wave_length'] * sll.nm
     z1 = form_dict['z1'] * cm
     z2 = form_dict['z2'] * cm
     Rbs = form_dict['Rbs']
-    tx = form_dict['tx'] * mrad
-    ty = form_dict['ty'] * mrad
-    f = form_dict['f'] * cm
-    size = form_dict['size'] * mm
+    tx = form_dict['tx'] * sll.mrad
+    ty = form_dict['ty'] * sll.mrad
+    f = form_dict['f'] * sll.cm
+    picture_size = form_dict['picture_size'] * sll.mm
     N = form_dict['N']
 
     # img=mpimg.imread('Michelson.png')
@@ -96,7 +97,7 @@ def get_graph(form_dict):
     # plt.show()
 
     # Generate a weak converging laser beam using a weak positive lens:
-    F = Begin(size, wavelength, N)
+    F = Begin(picture_size, wave_length, N)
     # F=GaussBeam(F, R)
     # F=GaussHermite(F,R,0,0,1) #new style
     F = GaussHermite(F, R)  # new style
@@ -125,14 +126,10 @@ def get_graph(form_dict):
     F = Forvard(z4, F)
     I = Intensity(1, F)
 
-    # color_scale = [(0, 'purple'), (0.13, 'blue'), (0.23, 'aqua'), (0.35, 'lime'),
-    #              (0.55, 'yellow'), (0.7, 'red'), (0.9, 'red'), (1, 'maroon')]
-    # fig = px.axis('off')
-    # fig = px.title('intensity pattern')
-    config = {'displaylogo': False,'toImageButtonOptions': {'height': None, 'width': None}}
-    fig = px.imshow(I)
+    laser_color = sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))
+    fig = px.imshow(I, color_continuous_scale=['#000000', laser_color])
     fig.update_yaxes(fixedrange=True)
 
-    # print(px.colors.sequential.Inferno)
-    graph = fig.to_html(config=config, include_plotlyjs=False, full_html=False)
-    return graph
+    config = {'displaylogo': False, 'toImageButtonOptions': {'height': None, 'width': None}}
+
+    return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
