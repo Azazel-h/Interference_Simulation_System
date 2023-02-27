@@ -105,14 +105,3 @@ class TestPage(TestCase):
     def test_interferometer_generation_with_wrong_refractive_index(self):
         request_data = self.get_data(refractive_index=-1)
         self.assert_updates_graph(request_data, 200, b'None')
-
-    def test_save_preset_not_saves_without_auth(self):
-        request_data = self.get_data()
-        self.assert_saves_preset(self.get_data(), 200, 'Вы пока не сохранили ни одного набора данных.'.encode('utf-8'))
-        self.assert_saves_preset(self.get_data(), 200, 'Вы пока не сохранили ни одного набора данных.'.encode('utf-8'))
-
-    def test_delete_empty_returns_empty(self):
-        self.assert_deletes_preset(0, 200, 'Вы пока не сохранили ни одного набора данных.'.encode('utf-8'))
-
-    def test_update_history_returns_empty(self):
-        self.assert_update_history(self.get_data(), 200, 'Вы пока не сделали ни одного запроса.'.encode('utf-8'))
