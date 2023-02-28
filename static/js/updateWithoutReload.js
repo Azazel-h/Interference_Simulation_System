@@ -3,14 +3,14 @@ let graph_request;
 let preset_request;
 let history_request;
 
-$(document).on("submit", function(event) {
+$(document).on("submit", function (event) {
     event.preventDefault();
 });
 
 function updateGraph(is_authorized, csrftoken) {
     let request_data = getFormFields();
 
-    if(graph_request && graph_request.readyState !== 4){
+    if (graph_request && graph_request.readyState !== 4) {
         graph_request.abort();
     }
 
@@ -21,25 +21,25 @@ function updateGraph(is_authorized, csrftoken) {
             "X-CSRFToken": csrftoken
         },
         data: request_data,
-        beforeSend: function() {
+        beforeSend: function () {
             $("#graph").html(
                 "<svg class=\"spinner\" viewBox=\"0 0 50 50\">" +
                 "    <circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle>" +
                 "</svg>"
             );
         },
-        success: function(response) {
+        success: function (response) {
             if (response === "None") {
                 $("#graph").html(
                     "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
-                    "    <p>Не удалось сгенерировать график.</p>" +
+                    "    <p>Не удалось сгенерировать график</p>" +
                     "</div>"
                 );
-            }
-            else
+            } else {
                 $("#graph").html(response);
+            }
         },
-        error: function(jqXHR, exception) {
+        error: function (jqXHR, exception) {
             $("#graph").html(processError(jqXHR, exception));
         }
     });
@@ -53,7 +53,7 @@ function savePreset(csrftoken) {
     let request_data = getFormFields();
     request_data["preset_operation"] = "save_preset";
 
-    if(preset_request && preset_request.readyState !== 4){
+    if (preset_request && preset_request.readyState !== 4) {
         preset_request.abort();
     }
 
@@ -68,7 +68,7 @@ function savePreset(csrftoken) {
             $("#presets").html(response);
 
             let save_preset_element = document.getElementById("save_preset");
-            if (! save_preset_element.disabled && response.split("<tr>").length - 2 >= 5) {
+            if (!save_preset_element.disabled && response.split("<tr>").length - 2 >= 5) {
                 save_preset_element.disabled = true;
             }
         }
@@ -76,7 +76,7 @@ function savePreset(csrftoken) {
 }
 
 function deletePreset(id, csrftoken) {
-    if(preset_request && preset_request.readyState !== 4){
+    if (preset_request && preset_request.readyState !== 4) {
         preset_request.abort();
     }
 
@@ -104,7 +104,7 @@ function deletePreset(id, csrftoken) {
 function updateHistory(csrftoken) {
     let request_data = getFormFields();
 
-    if(history_request && history_request.readyState !== 4){
+    if (history_request && history_request.readyState !== 4) {
         history_request.abort();
     }
 
@@ -115,7 +115,7 @@ function updateHistory(csrftoken) {
             "X-CSRFToken": csrftoken
         },
         data: request_data,
-        success: function(response) {
+        success: function (response) {
             $("#history").html(response);
         }
     });
@@ -124,7 +124,7 @@ function updateHistory(csrftoken) {
 function getFormFields() {
     let request_data = {};
 
-    $("#interferometer input").each(function(_, value) {
+    $("#interferometer input").each(function (_, value) {
         if (value.hasAttribute("type") && value.getAttribute("type") === "number") {
             request_data[value.id.slice(3)] = value.value;
         }
@@ -137,22 +137,22 @@ function processError(jqXHR, exception) {
     let message;
 
     if (exception === "abort") {
-        message = "Запрос прерван.";
+        message = "Запрос прерван";
     } else if (exception === "parsererror") {
-        message = "Ошибка чтения ответа сервера.";
+        message = "Ошибка чтения ответа сервера";
     } else if (exception === "timeout") {
-        message = "Превышено время ожидания.";
+        message = "Превышено время ожидания";
     } else if (jqXHR.status === 0) {
-        message = "Не удалось выполнить запрос. Попробуйте позже.";
+        message = "Не удалось выполнить запрос";
     } else if (jqXHR.status === 404) {
-        message = 'Запрашиваемая страница не найдена.';
+        message = 'Запрашиваемая страница не найдена';
     } else if (jqXHR.status === 500) {
-        message = "Ошибка сервера.";
+        message = "Ошибка сервера";
     } else {
-        message = "Неизвестная ошибка.";
+        message = "Неизвестная ошибка";
     }
 
     return "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
-           "    <p>" + message + "</p>" +
-           "</div>"
+        "    <p>" + message + "</p>" +
+        "</div>"
 }

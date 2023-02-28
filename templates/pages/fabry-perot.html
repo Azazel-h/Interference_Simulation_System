@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block head %}
-    <script src="https://cdn.plot.ly/plotly-2.16.1.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.18.0.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                         <div id="presets" class="accordion-body">
-                            {% include 'components/presets-table.html' %}
+                            {{ presets_table | safe }}
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                         <div id="history" class="accordion-body">
-                            {% include 'components/history-table.html' %}
+                            {{ history_table | safe }}
                         </div>
                     </div>
                 </div>

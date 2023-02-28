@@ -3,8 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index_page, name='index'),
-    path('update-graph/', views.update_graph),
-    path('update-history/', views.update_history),
-    path('update-preset/', views.update_preset)
+    path('', views.IndexPage.as_view(), name='index'),
+    path('update-graph/', views.Graph.as_view()),
+    path('update-history/', views.HistoryTable.as_view()),
+    path('update-preset/', views.PresetsTable.as_view())
 ]
