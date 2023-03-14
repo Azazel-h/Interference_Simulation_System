@@ -19,7 +19,7 @@ class PresetsTableMixin(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs) -> TemplateResponse:
         context = self.get_context_data()
-        context[self.context_object_name] = self.model.objects.filter(user=request.user.username).order_by('-id')
+        context[self.context_object_name] = self.model.objects.filter(user=request.user.uid).order_by('-id')
 
         return self.render_to_response(context)
 
@@ -29,9 +29,9 @@ class PresetsTableMixin(LoginRequiredMixin, ListView):
 
             if form.is_valid():
                 form_dict = dict(form.cleaned_data)
-                form_dict['user'] = request.user.username
+                form_dict['user'] = request.user.uid
 
-                if len(self.model.objects.filter(user=request.user.username)) < 5:
+                if len(self.model.objects.filter(user=request.user.uid)) < 5:
                     self.model.objects.create(**form_dict)
         elif request.POST.get('preset_operation') == 'delete_preset':
             self.model.objects.get(id=request.POST.get('delete_preset')).delete()
