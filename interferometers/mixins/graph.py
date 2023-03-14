@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.http import HttpResponse
 from django.views import View
 
@@ -16,5 +18,5 @@ class GraphMixin(View):
         return HttpResponse(graph)
 
     @staticmethod
-    def get_graph(form_dict: dict) -> str:
-        return ""
+    def get_graph(form_dict: dict) -> Optional[str]:
+        return None
