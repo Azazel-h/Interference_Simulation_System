@@ -72,7 +72,7 @@ class AuthBackend(CASBackend):
         if settings.CAS_CREATE_USER_WITH_ID:
             user_kwargs['id'] = self.get_user_id(attributes)
 
-        user, created = user_model._default_manager.get_or_create({'uid': username})
+        user, created = user_model._default_manager.update_or_create(uid=username, defaults=user_kwargs)
         if created:
             user = self.configure_user(user)
 
