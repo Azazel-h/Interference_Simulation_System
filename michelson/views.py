@@ -4,9 +4,9 @@ from LightPipes import *
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
-from interferometers.mixins.graph import GraphMixin
-from interferometers.mixins.history import HistoryTableMixin
-from interferometers.mixins.presets import PresetsTableMixin
+from misc.mixins.graph import GraphMixin
+from misc.mixins.history import HistoryTableMixin
+from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
 from .models import RequestM, PresetM
 
