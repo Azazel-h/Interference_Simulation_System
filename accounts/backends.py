@@ -1,7 +1,6 @@
 import logging
 from typing import Optional
 
-import ldap
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
@@ -73,7 +72,7 @@ class AuthBackend(CASBackend):
         if settings.CAS_CREATE_USER_WITH_ID:
             user_kwargs['id'] = self.get_user_id(attributes)
 
-        user, created = user_model._default_manager.get_or_create(**user_kwargs)
+        user, created = user_model._default_manager.get_or_create({'uid': username})
         if created:
             user = self.configure_user(user)
 
