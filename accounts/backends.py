@@ -44,21 +44,17 @@ class AuthBackend(CASBackend):
         user_ldap_info = None
         is_staff = True
 
-        for ls in ('EMPLOYEE', 'STUDENT'):
+        for ln in ('EMPLOYEE', 'STUDENT'):
+            ldap_con = settings.__getattr__(f'{ln}_LDAP')
+
             if user_ldap_info is None:
-                logging.debug(f'Searching in {ls} server')
+                logging.debug(f'Searching in {ldap_con.name} server')
+                data = ldap_con.search(username)
 
-                try:
-                    l = ldap.initialize(settings.__getattr__(f'{ls}_LDAP_SERVER_URI'))
-                    l.simple_bind(settings.__getattr__(f'{ls}_LDAP_BIND_DN'), settings.__getattr__(f'{ls}_LDAP_BIND_PASSWORD'))
-                    data = l.search_s(settings.__getattr__(f'{ls}_LDAP_BASE'), ldap.SCOPE_SUBTREE, f'(uid={username})')
+                if data:
+                    user_ldap_info = data[0][1]
 
-                    if data:
-                        user_ldap_info = data[0][1]
-                    else:
-                        is_staff = False
-                except ldap.LDAPError as error:
-                    logging.warning(f'LDAP error: {error}')
+                is_staff = False
 
         if user_ldap_info is None:
             return None

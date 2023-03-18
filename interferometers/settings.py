@@ -3,11 +3,12 @@ from pathlib import Path
 import redis
 from secret_key_generator import secret_key_generator
 
+from misc.network.ldap_protocol import LDAPConnection
+
 SECRET_KEY = secret_key_generator.generate()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -144,17 +145,21 @@ CAS_VERSION = '3'
 LDAP_USERNAME = ''
 LDAP_PASSWORD = ''
 
-# Employee LDAP settings
-EMPLOYEE_LDAP_SERVER_URI = 'ldaps://mail.bmstu.ru:636'
-EMPLOYEE_LDAP_BIND_DN = f'{LDAP_USERNAME}@bmstu.ru'
-EMPLOYEE_LDAP_BIND_PASSWORD = LDAP_PASSWORD
-EMPLOYEE_LDAP_BASE = 'cn=bmstu.ru'
+# Employee LDAP
+EMPLOYEE_LDAP = LDAPConnection(
+    'ldaps://mail.bmstu.ru:636',
+    f'{LDAP_USERNAME}@bmstu.ru',
+    LDAP_PASSWORD,
+    'cn=bmstu.ru',
+)
 
-# Student LDAP settings
-STUDENT_LDAP_SERVER_URI = 'ldaps://mailstudent.bmstu.ru:636'
-STUDENT_LDAP_BIND_DN = f'{LDAP_USERNAME}@mailstudent.bmstu.ru'
-STUDENT_LDAP_BIND_PASSWORD = LDAP_PASSWORD
-STUDENT_LDAP_BASE = 'cn=student.bmstu.ru'
+# Student LDAP
+STUDENT_LDAP = LDAPConnection(
+    'ldaps://mailstudent.bmstu.ru:636',
+    f'{LDAP_USERNAME}@mailstudent.bmstu.ru',
+    LDAP_PASSWORD,
+    'cn=student.bmstu.ru',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
