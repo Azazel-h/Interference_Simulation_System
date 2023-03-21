@@ -147,6 +147,7 @@ LDAP_PASSWORD = ''
 
 # Employee LDAP
 EMPLOYEE_LDAP = LDAPConnection(
+    'Employee',
     'ldaps://mail.bmstu.ru:636',
     f'{LDAP_USERNAME}@bmstu.ru',
     LDAP_PASSWORD,
@@ -155,6 +156,7 @@ EMPLOYEE_LDAP = LDAPConnection(
 
 # Student LDAP
 STUDENT_LDAP = LDAPConnection(
+    'Student',
     'ldaps://mailstudent.bmstu.ru:636',
     f'{LDAP_USERNAME}@mailstudent.bmstu.ru',
     LDAP_PASSWORD,
