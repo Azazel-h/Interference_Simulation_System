@@ -19,15 +19,22 @@
                             Главная
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/fabry-perot">
-                            Фабри-Перо
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="dropdownInter" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Интерферометры
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/michelson">
-                            Майкельсон
-                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownInter">
+                            <li>
+                                <a class="dropdown-item" href="/fabry-perot">
+                                    Фабри-Перо
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/michelson">
+                                    Майкельсон
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 {% endblock %}
             </ul>

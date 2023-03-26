@@ -1,20 +1,20 @@
+from typing import Any
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import QuerySet
 from django.template.response import TemplateResponse
 from django.views.generic import ListView
 
 
 class PresetsTableMixin(LoginRequiredMixin, ListView):
-    model = None
-    template_name = None
-    context_object_name = None
     form = None
     object_list = None
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return self.model.objects
 
     def get(self, request, *args, **kwargs) -> TemplateResponse:
