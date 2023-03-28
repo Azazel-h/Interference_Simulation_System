@@ -39,24 +39,34 @@ class AuthBackend(CASBackend):
 
                 is_staff = False
 
-        if user_ldap_info is None:
-            return None
-
-        full_name = user_ldap_info['cn'][0].decode().split()
         user_kwargs = {
-            'uid': user_ldap_info['uid'][0].decode(),
-            'mail': user_ldap_info['mail'][0].decode(),
-            'is_staff': user_ldap_info['is_staff'],
-            'first_name': full_name[1],
-            'last_name': full_name[0],
-            'patronymic': full_name[2] if len(full_name) == 3 else '',
-            'title': user_ldap_info['ou'][0].decode(),
+            'uid': username,
+            'is_staff': False,
         }
 
-        user, created = user_model._default_manager.update_or_create(uid=username, defaults=user_kwargs)
+        if user_ldap_info:
+            full_name = user_ldap_info['cn'][0].decode().split()
 
-        if created:
-            user = self.configure_user(user)
+            user_kwargs['mail'] = user_ldap_info['mail'][0].decode()
+            user_kwargs['is_staff'] = user_ldap_info['is_staff']
+            user_kwargs['first_name'] = full_name[1]
+            user_kwargs['last_name'] = full_name[0]
+            user_kwargs['patronymic'] = full_name[2] if len(full_name) == 3 else ''
+            user_kwargs['title'] = user_ldap_info['ou'][0].decode()
+
+            is_update = True
+        else:
+            is_update = False
+
+        user = user_model._default_manager.filter(uid=username).first()
+
+        if user:
+            if is_update:
+                user.update(**user_kwargs)
+            created = False
+        else:
+            user = self.configure_user(user_model._default_manager.create(**user_kwargs))
+            created = True
 
         if not self.user_can_authenticate(user):
             return None

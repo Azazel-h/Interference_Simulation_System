@@ -54,13 +54,17 @@ class CASUser(AbstractBaseUser, PermissionsMixin):
     objects = CASUserManager()
 
     def get_name(self):
-        if self.patronymic:
+        if all((self.last_name, self.first_name, self.patronymic)):
             return f'{self.last_name} {self.first_name} {self.patronymic}'
-        else:
+        elif all((self.last_name, self.first_name)):
             return f'{self.last_name} {self.first_name}'
+        else:
+            return self.uid
 
     def get_short_name(self):
-        if self.patronymic:
+        if all((self.last_name, self.first_name, self.patronymic)):
             return f'{self.last_name} {self.first_name[0]}. {self.patronymic[0]}.'
-        else:
+        elif all((self.last_name, self.first_name)):
             return f'{self.last_name} {self.first_name[0]}.'
+        else:
+            return self.uid
