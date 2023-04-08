@@ -76,6 +76,7 @@ class AuthBackend(CASBackend):
         if user:
             if is_update:
                 user.update(**user_kwargs)
+                user.save()
             created = False
         else:
             user = self.configure_user(user_model._default_manager.create(**user_kwargs))
