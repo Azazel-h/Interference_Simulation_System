@@ -21,8 +21,21 @@ class AuthBackend(CASBackend):
         if not username:
             return None
 
-        username = self.clean_username(username)
+        # CASUser model from `accounts` models.py:
+        # Columns:
+        #   id - user id (integer (auto increment))
+        #   last_login - last login datetime (datetime)
+        #   is_superuser - is user a superuser? (bool)
+        #   uid - uid in BMSTU network (unique string (20 symbols))
+        #   mail - email in BMSTU network (unique string (254 symbols))
+        #   is_staff - is user a staff of BMSTU? (bool)
+        #   first_name - first name (string (100 symbols))
+        #   last_name - last name (string (100 symbols))
+        #   patronymic - patronymic (string (100 symbols))
+        #   title - department for students, job title for staff (string (100 symbols))
         user_model = get_user_model()
+
+        username = self.clean_username(username)
         user_ldap_info = None
         is_staff = True
 
