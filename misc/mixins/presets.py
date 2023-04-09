@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from django.views.generic import ListView
 
 
-class HistoryTableMixin(LoginRequiredMixin, ListView):
+class PresetsTableMixin(LoginRequiredMixin, ListView):
     form = None
     object_list = None
 
@@ -19,16 +19,21 @@ class HistoryTableMixin(LoginRequiredMixin, ListView):
 
     def get(self, request, *args, **kwargs) -> TemplateResponse:
         context = self.get_context_data()
-        context[self.context_object_name] = self.get_queryset().filter(user=request.user.username).order_by('-id')[:5]
+        context[self.context_object_name] = self.model.objects.filter(user=request.user.uid).order_by('-id')
 
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs) -> TemplateResponse:
-        history_form = self.form(request.POST)
+        if request.POST.get('preset_operation') == 'save_preset':
+            form = self.form(request.POST)
 
-        if history_form.is_valid():
-            form_dict = dict(history_form.cleaned_data)
-            form_dict['user'] = request.user.username
-            self.model.objects.create(**form_dict)
+            if form.is_valid():
+                form_dict = dict(form.cleaned_data)
+                form_dict['user'] = request.user.uid
+
+                if len(self.model.objects.filter(user=request.user.uid)) < 5:
+                    self.model.objects.create(**form_dict)
+        elif request.POST.get('preset_operation') == 'delete_preset':
+            self.model.objects.get(id=request.POST.get('delete_preset')).delete()
 
         return self.get(request)

@@ -42,7 +42,7 @@
                 {% if user.is_authenticated %}
                     {% block account_tab %}
                         <li class="nav-item">
-                            <span class="navbar-text">{{ user.username }}</span>
+                            <span class="navbar-text">{{ user.get_short_name }}</span>
                             <a class="d-inline nav-link" href="/accounts/logout"> Выйти </a>
                         </li>
                     {% endblock %}

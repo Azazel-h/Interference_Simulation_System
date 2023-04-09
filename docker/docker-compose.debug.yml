@@ -16,4 +16,7 @@ services:
     environment:
       - DJANGO_PORT
     command: >
-      sh -c "python3 /app/manage.py runserver 0.0.0.0:${DJANGO_PORT}"
+      sh -c "python3 -m pip install -r /app/requirements.txt &&
+             python3 /app/manage.py makemigrations accounts fabry_perot michelson &&
+             python3 /app/manage.py migrate &&
+             python3 /app/manage.py runserver 0.0.0.0:${DJANGO_PORT}"

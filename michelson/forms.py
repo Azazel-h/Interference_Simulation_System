@@ -1,6 +1,6 @@
 from django import forms
 
-from interferometers.components.widgets import RangeInput
+from misc.interface.widgets import RangeInput
 
 
 class GraphForm(forms.Form):
