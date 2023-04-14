@@ -1,0 +1,23 @@
+.content {
+    font-family: "PT Sans", sans-serif;
+}
+
+.content h1 {
+    font-size: 28px;
+    text-align: center;
+}
+
+.content p {
+    font-size: 16px;
+    text-align: justify;
+}
+
+.content a {
+    text-decoration: none;
+}
+
+.caption p {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
