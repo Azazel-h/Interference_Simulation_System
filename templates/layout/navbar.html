@@ -6,8 +6,7 @@
             <img src="{% static 'img/bmstu.webp' %}" alt="Logo" width="40" height="40">
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -19,25 +18,34 @@
                             Главная
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/fabry-perot">
-                            Фабри-Перо
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="/michelson">
-                            Майкельсон
-                        </a>
-                    </li>
+
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="dropOtherProjects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Другие проекты
+                        <a class="nav-link dropdown-toggle" id="dropLabs" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Лабораторные работы
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropOtherProjects">
+                        <ul class="dropdown-menu" aria-labelledby="dropLabs">
+                            <li>
+                                <a class="dropdown-item" href="/fabry-perot">
+                                    Фабри-Перо
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/michelson">
+                                    Майкельсон
+                                </a>
+                            </li>
+                            <li class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item">
-                                    Ничего
+                                    Другие &raquo;
                                 </a>
+                                <ul class="dropdown-menu dropdown-submenu">
+                                    <li>
+                                        <a class="dropdown-item" href="http://h78.net40.bmstu.ru:8040">
+                                            Эффект Зеемана
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </li>
