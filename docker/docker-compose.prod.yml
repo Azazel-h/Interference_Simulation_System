@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  web:
+    image: "nginx"
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/templates/nginx.conf.template
+      - ../static:/var/www/html/static:ro
+    ports:
+      - "${NGINX_PORT}:80"
+    environment:
+      - WEB_DOMAIN
+      - DJANGO_PORT
+    command: >
+      sh -c "envsubst '$$WEB_DOMAIN $$DJANGO_PORT' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/conf.d/default.conf &&
+             nginx -g 'daemon off;'"
+
+  redis:
+    image: "redis"
+    expose:
+      - "6379"
+
+  django:
+    build:
+      context: ..
+    volumes:
+      - ..:/app
+    expose:
+      - "${DJANGO_PORT}"
+    environment:
+      - DJANGO_PORT
+    command: >
+      sh -c "python3 -m pip install -r /app/requirements.txt &&
+             python3 /app/manage.py makemigrations accounts fabry_perot michelson &&
+             python3 /app/manage.py migrate &&
+             python3 /app/manage.py collectstatic --no-input &&
+             python3 /app/manage.py runserver 0.0.0.0:${DJANGO_PORT}"

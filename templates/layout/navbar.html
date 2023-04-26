@@ -15,19 +15,34 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% block main_tab %}
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">
+                        <a class="nav-link" href="/">
                             Главная
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/fabry-perot">
-                            Фабри-Перо
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="dropLabs" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Лабораторные работы
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/michelson">
-                            Майкельсон
-                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropLabs">
+                            <li>
+                                <a class="dropdown-item" href="/fabry-perot">
+                                    Фабри-Перо
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/michelson">
+                                    Майкельсон
+                                </a>
+                            </li>
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="http://h78.net40.bmstu.ru:8040">
+                                    Эффект Зеемана
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 {% endblock %}
             </ul>
@@ -35,7 +50,7 @@
                 {% if user.is_authenticated %}
                     {% block account_tab %}
                         <li class="nav-item">
-                            <span class="navbar-text">{{ user.username }}</span>
+                            <span class="navbar-text">{{ user.get_short_name }}</span>
                             <a class="d-inline nav-link" href="/accounts/logout"> Выйти </a>
                         </li>
                     {% endblock %}

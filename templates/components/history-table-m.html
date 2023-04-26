@@ -21,22 +21,22 @@
                 {% for req in array_of_reqs %}
                     <tr>
                         <th scope="row">
-                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFillM({{ forloop.counter }}, 'history-table')">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
+                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFillM({{ forloop.counter }}, 'history-table')" title="{% timezone "Europe/Moscow" %}{{ req.request_time|date:"Y-m-d" }}{% endtimezone %}">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
                         </th>
-                        <td id="wavelength-{{ forloop.counter }}">{{ req.wavelength }}</td>
+                        <td id="wavelength-{{ forloop.counter }}">{{ req.wave_length }}</td>
                         <td id="z1-{{ forloop.counter }}">{{ req.z1 }}</td>
                         <td id="z2-{{ forloop.counter }}">{{ req.z2 }}</td>
                         <td id="Rbs-{{ forloop.counter }}">{{ req.Rbs }}</td>
                         <td id="tx-{{ forloop.counter }}">{{ req.tx }}</td>
                         <td id="ty-{{ forloop.counter }}">{{ req.ty }}</td>
                         <td id="f-{{ forloop.counter }}">{{ req.f }}</td>
-                        <td id="size-{{ forloop.counter }}">{{ req.size }}</td>
+                        <td id="size-{{ forloop.counter }}">{{ req.picture_size }}</td>
                         <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <strong>Вы пока не сделали ни одного запроса.</strong>
+        <strong>Вы пока не сделали ни одного запроса</strong>
     {% endif %}
 </div>

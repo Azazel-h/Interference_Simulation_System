@@ -34,20 +34,20 @@
                             </form>
                         </div>
                     </th>
-                    <td id="wavelength-{{ forloop.counter }}">{{ req.wavelength }}</td>
+                    <td id="wavelength-{{ forloop.counter }}">{{ req.wave_length }}</td>
                     <td id="z1-{{ forloop.counter }}">{{ req.z1 }}</td>
                     <td id="z2-{{ forloop.counter }}">{{ req.z2 }}</td>
                     <td id="Rbs-{{ forloop.counter }}">{{ req.Rbs }}</td>
                     <td id="tx-{{ forloop.counter }}">{{ req.tx }}</td>
                     <td id="ty-{{ forloop.counter }}">{{ req.ty }}</td>
                     <td id="f-{{ forloop.counter }}">{{ req.f }}</td>
-                    <td id="size-{{ forloop.counter }}">{{ req.size }}</td>
+                    <td id="size-{{ forloop.counter }}">{{ req.picture_size }}</td>
                     <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <strong>Вы пока не сохранили ни одного набора данных.</strong>
+        <strong>Вы пока не сохранили ни одного набора данных</strong>
     {% endif %}
 </div>

@@ -8,7 +8,6 @@ function autoFill(num, source) {
         ["id_reflectivity", "reflectivity-" + num],
         ["id_refractive_index", "refractive-index-" + num],
         ["id_picture_size", "picture-size-" + num],
-        ["id_incident_light_intensity", "incident-light-intensive-" + num],
         ["id_N", "n-" + num]
     ]
 
@@ -18,14 +17,14 @@ function autoFill(num, source) {
 function autoFillM(num, source) {
     const source_tr = document.getElementById(source).children[1].children[num - 1];
     const id_and_value = [
-        ["id_wavelength", "wavelength-" + num],
+        ["id_wave_length", "wavelength-" + num],
         ["id_z1", "z1-" + num],
         ["id_z2", "z2-" + num],
         ["id_Rbs", "Rbs-" + num],
         ["id_tx", "tx-" + num],
         ["id_ty", "ty-" + num],
         ["id_f", "f-" + num],
-        ["id_size", "size-" + num],
+        ["id_picture_size", "size-" + num],
         ["id_N", "n-" + num]
     ]
 
