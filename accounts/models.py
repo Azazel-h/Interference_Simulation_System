@@ -42,7 +42,7 @@ class CASUserManager(BaseUserManager):
 class CASUser(AbstractBaseUser, PermissionsMixin):
     password = None
     uid = models.CharField(unique=True, max_length=20)
-    mail = models.EmailField(unique=True)
+    mail = models.EmailField()
     is_staff = models.BooleanField()
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)

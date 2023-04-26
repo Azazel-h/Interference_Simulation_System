@@ -20,7 +20,7 @@ if test -f .env; then
     fi
 
     echo "Building container..."
-    if docker-compose -f "$docker_file" build; then
+    if docker-compose -f "$docker_file" build --force-rm --no-cache; then
       echo "Starting container..."
       docker-compose -p "$container_name" -f "$docker_file" up
     else

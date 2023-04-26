@@ -75,7 +75,8 @@ class AuthBackend(CASBackend):
 
         if user:
             if is_update:
-                user.update(**user_kwargs)
+                for (key, value) in user_kwargs.items():
+                    setattr(user, key, value)
                 user.save()
             created = False
         else:

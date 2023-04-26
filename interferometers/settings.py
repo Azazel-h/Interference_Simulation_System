@@ -156,8 +156,8 @@ CAS_VERSION = '3'
 # LDAP config
 
 # Login credentials
-LDAP_USERNAME = ''
-LDAP_PASSWORD = ''
+LDAP_USERNAME = env('LDAP_USERNAME')
+LDAP_PASSWORD = env('LDAP_PASSWORD')
 
 # Employee LDAP
 EMPLOYEE_LDAP = LDAPConnection(

@@ -30,6 +30,12 @@ class LDAPConnection:
 
     def search(self, username: str) -> Optional[dict]:
         if self.connection:
-            return self.connection.search_s(self.search_base, ldap.SCOPE_SUBTREE, f'(uid={username})')
+            try:
+                logging.debug(f'Searching for `{username}` user')
+                return self.connection.search_s(self.search_base, ldap.SCOPE_SUBTREE, f'(uid={username})')
+            except ldap.SERVER_DOWN:
+                logging.warning('LDAP connection refused. Reconnecting...')
+                self.init_ldap_server()
+                self.search(username)
         else:
             logging.warning(f'{self.name} LDAP server isn\'t initialized')
