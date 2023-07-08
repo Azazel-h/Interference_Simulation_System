@@ -30,7 +30,7 @@ class IndexPage(TemplateView):
         return self.render_to_response(context)
 
 
-# /fabry-perot/update_graph
+# /fabry-perot/graph
 class Graph(GraphMixin):
     form = GraphForm
 
@@ -84,7 +84,7 @@ class Graph(GraphMixin):
         return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
 
 
-# /fabry-perot/update_history
+# /fabry-perot/history
 class HistoryTable(HistoryTableMixin):
     model = RequestFP
     template_name = 'components/history-table.html'
@@ -92,7 +92,7 @@ class HistoryTable(HistoryTableMixin):
     form = GraphForm
 
 
-# /fabry-perot/update_preset
+# /fabry-perot/preset
 class PresetsTable(PresetsTableMixin):
     model = PresetFP
     template_name = 'components/presets-table.html'

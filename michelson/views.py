@@ -27,7 +27,7 @@ class IndexPage(TemplateView):
         return self.render_to_response(context)
 
 
-# /michelson/update_graph
+# /michelson/graph
 class Graph(GraphMixin):
     form = GraphForm
 
@@ -89,7 +89,7 @@ class Graph(GraphMixin):
         return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
 
 
-# /michelson/update_history
+# /michelson/history
 class HistoryTable(HistoryTableMixin):
     model = RequestM
     template_name = 'components/history-table-m.html'
@@ -97,10 +97,9 @@ class HistoryTable(HistoryTableMixin):
     form = GraphForm
 
 
-# /michelson/update_preset
+# /michelson/preset
 class PresetsTable(PresetsTableMixin):
     model = PresetM
     template_name = 'components/presets-table-m.html'
     context_object_name = 'presets'
     form = GraphForm
-

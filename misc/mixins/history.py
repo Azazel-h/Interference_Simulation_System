@@ -9,17 +9,19 @@ from django.views.generic import ListView
 class HistoryTableMixin(LoginRequiredMixin, ListView):
     form = None
     object_list = None
+    paginate_by = 5
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         return context
 
     def get_queryset(self) -> QuerySet:
-        return self.model.objects
+        return self.model.objects.filter().order_by('-id')
 
     def get(self, request, *args, **kwargs) -> TemplateResponse:
+        self.object_list = self.get_queryset().filter(user=request.user.uid)
         context = self.get_context_data()
-        context[self.context_object_name] = self.get_queryset().filter(user=request.user.uid).order_by('-id')[:5]
+        context[self.context_object_name] = self.object_list
 
         return self.render_to_response(context)
 
@@ -31,4 +33,4 @@ class HistoryTableMixin(LoginRequiredMixin, ListView):
             form_dict['user'] = request.user.uid
             self.model.objects.create(**form_dict)
 
-        return self.get(request)
+        return self.get(request, page=request.POST['page'])

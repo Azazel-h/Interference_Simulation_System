@@ -3,6 +3,8 @@ let graph_request;
 let preset_request;
 let history_request;
 
+let cur_history_page = 1;
+
 $(document).on("submit", function (event) {
     event.preventDefault();
 });
@@ -15,7 +17,7 @@ function updateGraph(is_authorized, csrftoken) {
     }
 
     graph_request = $.ajax({
-        url: current_url + "update-graph/",
+        url: current_url + "graph/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -58,7 +60,7 @@ function savePreset(csrftoken) {
     }
 
     preset_request = $.ajax({
-        url: current_url + "update-preset/",
+        url: current_url + "preset/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -81,7 +83,7 @@ function deletePreset(id, csrftoken) {
     }
 
     preset_request = $.ajax({
-        url: current_url + "update-preset/",
+        url: current_url + "preset/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
@@ -109,12 +111,34 @@ function updateHistory(csrftoken) {
     }
 
     history_request = $.ajax({
-        url: current_url + "update-history/",
+        url: current_url + "history/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
         },
-        data: request_data,
+        data: Object.assign({}, request_data, {"page": cur_history_page}),
+        success: function (response) {
+            $("#history").html(response);
+        }
+    });
+}
+
+function getHistoryPage(csrftoken, page) {
+    cur_history_page = page;
+
+    if (history_request && history_request.readyState !== 4) {
+        history_request.abort();
+    }
+
+    history_request = $.ajax({
+        url: current_url + "history",
+        data: {
+            page: cur_history_page
+        },
+        type: "GET",
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
         success: function (response) {
             $("#history").html(response);
         }

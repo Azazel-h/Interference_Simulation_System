@@ -1,7 +1,7 @@
 {% load tz %}
 
 <div class="container">
-    {% if array_of_reqs|length > 0 %}
+    {% if page_obj|length > 0 %}
         <table id="history-table" class="table">
             <thead>
             <tr>
@@ -18,24 +18,64 @@
             </tr>
             </thead>
             <tbody>
-                {% for req in array_of_reqs %}
-                    <tr>
-                        <th scope="row">
-                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFillM({{ forloop.counter }}, 'history-table')" title="{% timezone "Europe/Moscow" %}{{ req.request_time|date:"Y-m-d" }}{% endtimezone %}">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
-                        </th>
-                        <td id="wavelength-{{ forloop.counter }}">{{ req.wave_length }}</td>
-                        <td id="z1-{{ forloop.counter }}">{{ req.z1 }}</td>
-                        <td id="z2-{{ forloop.counter }}">{{ req.z2 }}</td>
-                        <td id="Rbs-{{ forloop.counter }}">{{ req.Rbs }}</td>
-                        <td id="tx-{{ forloop.counter }}">{{ req.tx }}</td>
-                        <td id="ty-{{ forloop.counter }}">{{ req.ty }}</td>
-                        <td id="f-{{ forloop.counter }}">{{ req.f }}</td>
-                        <td id="size-{{ forloop.counter }}">{{ req.picture_size }}</td>
-                        <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
-                    </tr>
-                {% endfor %}
+            {% for req in page_obj %}
+                <tr>
+                    <th scope="row">
+                        <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFillM({{ forloop.counter }}, 'history-table')" title="{% timezone "Europe/Moscow" %}{{ req.request_time|date:"Y-m-d" }}{% endtimezone %}">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
+                    </th>
+                    <td id="wavelength-{{ forloop.counter }}">{{ req.wave_length }}</td>
+                    <td id="z1-{{ forloop.counter }}">{{ req.z1 }}</td>
+                    <td id="z2-{{ forloop.counter }}">{{ req.z2 }}</td>
+                    <td id="Rbs-{{ forloop.counter }}">{{ req.Rbs }}</td>
+                    <td id="tx-{{ forloop.counter }}">{{ req.tx }}</td>
+                    <td id="ty-{{ forloop.counter }}">{{ req.ty }}</td>
+                    <td id="f-{{ forloop.counter }}">{{ req.f }}</td>
+                    <td id="size-{{ forloop.counter }}">{{ req.picture_size }}</td>
+                    <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
+
+        {% if is_paginated %}
+            {% if page_obj.has_other_pages %}
+                <ul class="pagination justify-content-center" style="margin:20px 0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <input class="page-link" type="submit" value="Пред."
+                                   onclick="getHistoryPage('{{ csrf_token }}', {{ page_obj.previous_page_number }})">
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <input class="page-link" type="submit" value="Пред.">
+                        </li>
+                    {% endif %}
+                    {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <li class="page-item active">
+                                <input class="page-link" type="submit" value="{{ i }}"
+                                       onclick="getHistoryPage('{{ csrf_token }}', {{ i }})">
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <input class="page-link" type="submit" value="{{ i }}"
+                                       onclick="getHistoryPage('{{ csrf_token }}', {{ i }})">
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <input class="page-link" type="submit" value="След."
+                                   onclick="getHistoryPage('{{ csrf_token }}', {{ page_obj.next_page_number }})">
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <input class="page-link" type="submit" value="След.">
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        {% endif %}
     {% else %}
         <strong>Вы пока не сделали ни одного запроса</strong>
     {% endif %}
