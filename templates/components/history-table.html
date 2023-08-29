@@ -1,4 +1,5 @@
 {% load tz %}
+{% load paginator_tags %}
 
 <div class="container">
     {% if page_obj|length > 0 %}
@@ -40,35 +41,38 @@
                 <ul class="pagination justify-content-center" style="margin:20px 0">
                     {% if page_obj.has_previous %}
                         <li class="page-item">
-                            <input class="page-link" type="submit" value="Пред."
-                                   onclick="getHistoryPage('{{ csrf_token }}', {{ page_obj.previous_page_number }})">
+                            <input class="page-link" type="submit" value="«" onclick="getHistoryPage('{{ csrf_token }}', {{ page_obj.number|add:"-1" }})">
                         </li>
                     {% else %}
                         <li class="page-item disabled">
-                            <input class="page-link" type="submit" value="Пред.">
+                            <input class="page-link" type="submit" value="«">
                         </li>
                     {% endif %}
-                    {% for i in page_obj.paginator.page_range %}
+                    {% get_proper_elided_page_range paginator page_obj.number 1 1 as page_range %}
+                    {% for i in page_range %}
                         {% if page_obj.number == i %}
                             <li class="page-item active">
-                                <input class="page-link" type="submit" value="{{ i }}"
-                                       onclick="getHistoryPage('{{ csrf_token }}', {{ i }})">
+                                <input class="page-link" type="submit" value="{{ i }}" onclick="getHistoryPage('{{ csrf_token }}', {{ i }})">
                             </li>
                         {% else %}
-                            <li class="page-item">
-                                <input class="page-link" type="submit" value="{{ i }}"
-                                       onclick="getHistoryPage('{{ csrf_token }}', {{ i }})">
-                            </li>
+                            {% if i == paginator.ELLIPSIS %}
+                                <li class="page-item">
+                                    <span class="page-link">{{ paginator.ELLIPSIS }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <input class="page-link" type="submit" value="{{ i }}" onclick="getHistoryPage('{{ csrf_token }}', {{ i }})">
+                                </li>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                     {% if page_obj.has_next %}
                         <li class="page-item">
-                            <input class="page-link" type="submit" value="След."
-                                   onclick="getHistoryPage('{{ csrf_token }}', {{ page_obj.next_page_number }})">
+                            <input class="page-link" type="submit" value="»" onclick="getHistoryPage('{{ csrf_token }}', {{ page_obj.number|add:"1" }})">
                         </li>
                     {% else %}
                         <li class="page-item disabled">
-                            <input class="page-link" type="submit" value="След.">
+                            <input class="page-link" type="submit" value="»">
                         </li>
                     {% endif %}
                 </ul>
