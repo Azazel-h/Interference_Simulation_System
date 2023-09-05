@@ -11,4 +11,4 @@ python-environ==0.4.54
 python-ldap===3.4.3
 redis==5.0.0
 secret-key-generator==0.0.8
-sepl-light-lib==0.0.4
+selph-light-lib==0.0.4
