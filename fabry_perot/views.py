@@ -2,7 +2,7 @@ import math
 
 import numpy as np
 import plotly.express as px
-import sepl_light_lib as sll
+import selph_light_lib as sll
 from LightPipes import Begin, Intensity
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView

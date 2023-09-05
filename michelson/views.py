@@ -1,5 +1,5 @@
 import plotly.express as px
-import sepl_light_lib as sll
+import selph_light_lib as sll
 from LightPipes import *
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
