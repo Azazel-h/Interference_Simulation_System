@@ -5,8 +5,14 @@ import ldap
 
 
 class LDAPConnection:
-    def __init__(self, name: str, server_uri: str = None, bind_dn: str = None, bind_password: str = None,
-                 search_base: str = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        server_uri: str = None,
+        bind_dn: str = None,
+        bind_password: str = None,
+        search_base: str = None
+    ) -> None:
         self.name = name
         self.server_uri = server_uri
         self.bind_dn = bind_dn

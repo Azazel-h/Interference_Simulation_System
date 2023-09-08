@@ -79,7 +79,13 @@ class Graph(GraphMixin):
         fig = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
         fig.update_yaxes(fixedrange=True)
 
-        config = {'displaylogo': False, 'toImageButtonOptions': {'height': None, 'width': None}}
+        config = {
+            'displaylogo': False,
+            'toImageButtonOptions': {
+                'height': None,
+                'width': None
+            }
+        }
 
         return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
 
