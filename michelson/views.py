@@ -110,7 +110,7 @@ class Graph(GraphMixin):
 # /michelson/history
 class HistoryTable(HistoryTableMixin):
     column_names = column_names
-    model = PresetM
+    model = RequestM
     form = GraphForm
 
 
