@@ -5,11 +5,16 @@ from django.db.models import QuerySet
 from django.template.response import TemplateResponse
 from django.views.generic import ListView
 
+from fabry_perot.forms import GraphForm
+
 
 class HistoryTableMixin(LoginRequiredMixin, ListView):
+    paginate_by = 5
+    template_name = 'components/history-table.html'
+
+    column_names = None
     form = None
     object_list = None
-    paginate_by = 5
 
     def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -21,7 +26,8 @@ class HistoryTableMixin(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs) -> TemplateResponse:
         self.object_list = self.get_queryset().filter(user=request.user.uid)
         context = self.get_context_data()
-        context[self.context_object_name] = self.object_list
+        context['column_names'] = self.column_names
+        context['form_fields'] = list(self.form.declared_fields)
 
         return self.render_to_response(context)
 

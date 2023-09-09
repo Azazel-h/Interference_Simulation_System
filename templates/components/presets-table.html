@@ -1,48 +1,46 @@
+{% load attribute_tags %}
+{% load list_tags %}
+
 <div class="container">
     {% if presets|length > 0 %}
-        <table id="preset" class="table">
+        {% apply_meth_on_list_elems presets.0|get_attr:"_meta"|get_attr:"fields" "__getattribute__" "name" as obj_names %}
+        <table id="presets-table" class="table">
             <thead>
             <tr>
                 <th scope="col"></th>
-                <th scope="col">Длина волны</th>
-                <th scope="col">Расстояние между стеклами</th>
-                <th scope="col">Фокусное расстояние линзы</th>
-                <th scope="col">Разница хода</th>
-                <th scope="col">Коэффициент отражения</th>
-                <th scope="col">Коэффициент преломления</th>
-                <th scope="col">Размер рисунка</th>
-                <th scope="col">Разрешение</th>
+                {% for column_name in column_names %}
+                    <th scope="col">{{ column_name }}</th>
+                {% endfor %}
             </tr>
             </thead>
             <tbody>
-            {% for req in presets %}
-                <tr>
-                    <th scope="row">
-                        <div class="hstack gap-2">
-                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFill({{ forloop.counter }}, 'preset')">
-                                <i class="bi bi-check2"></i>
-                            </button>
+                {% for req in presets %}
+                    <tr>
+                        {% with forloop.counter as obj_id %}
+                            <th scope="row">
+                                <div class="hstack gap-2">
+                                    <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="fillValues({{ obj_names }}, {{ obj_id }}, {{ form_fields }}, 'presets-table')">
+                                        <i class="bi bi-check2"></i>
+                                    </button>
 
-                            <form>
-                                {% csrf_token %}
+                                    <form>
+                                        {% csrf_token %}
 
-                                <input type="hidden" value="{{ req.id }}">
-                                <button type="submit" class="btn btn-outline-danger btn-sm btn-block" onclick="deletePreset({{ req.id }}, '{{ csrf_token }}')">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </th>
-                    <td id="wave-length-{{ forloop.counter }}">{{ req.wave_length }}</td>
-                    <td id="glasses-dist-{{ forloop.counter }}">{{ req.glasses_distance }}</td>
-                    <td id="focal-distance-{{ forloop.counter }}">{{ req.focal_distance }}</td>
-                    <td id="stroke-difference-{{ forloop.counter }}">{{ req.stroke_difference }}</td>
-                    <td id="reflectivity-{{ forloop.counter }}">{{ req.reflectivity }}</td>
-                    <td id="refractive-index-{{ forloop.counter }}">{{ req.refractive_index }}</td>
-                    <td id="picture-size-{{ forloop.counter }}">{{ req.picture_size }}</td>
-                    <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
-                </tr>
-            {% endfor %}
+                                        <input type="hidden" value="{{ req.id }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm btn-block" onclick="deletePreset({{ req.id }}, '{{ csrf_token }}')">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </th>
+                            {% for obj_name in obj_names %}
+                                {% if obj_name != "id" and obj_name != "user" and obj_name != "request_time" %}
+                                    <td id="{{ obj_name }}-{{ obj_id }}">{{ req|get_attr:obj_name }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     {% else %}

@@ -13,6 +13,17 @@ from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
 from .models import RequestFP, PresetFP
 
+column_names = (
+    "Длина волны",
+    "Расстояние между стеклами",
+    "Фокусное расстояние линзы",
+    "Разница хода",
+    "Коэффициент отражения",
+    "Коэффициент преломления",
+    "Размер рисунка",
+    "Разрешение",
+)
+
 
 # /fabry-perot
 class IndexPage(TemplateView):
@@ -92,15 +103,13 @@ class Graph(GraphMixin):
 
 # /fabry-perot/history
 class HistoryTable(HistoryTableMixin):
-    model = RequestFP
-    template_name = 'components/history-table.html'
-    context_object_name = 'array_of_reqs'
+    column_names = column_names
     form = GraphForm
+    model = RequestFP
 
 
 # /fabry-perot/preset
 class PresetsTable(PresetsTableMixin):
+    column_names = column_names
     model = PresetFP
-    template_name = 'components/presets-table.html'
-    context_object_name = 'presets'
     form = GraphForm

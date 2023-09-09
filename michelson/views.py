@@ -10,6 +10,18 @@ from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
 from .models import RequestM, PresetM
 
+column_names = (
+    "Длина волны",
+    "Длина 1 плеча",
+    "Длина 2 плеча",
+    "Отражаемость разделителя луча",
+    "Наклон зеркала по X",
+    "Наклон зеркала по Y",
+    "фокусное расстояние",
+    "Размер рисунка",
+    "Разрешение",
+)
+
 
 # /michelson
 class IndexPage(TemplateView):
@@ -97,15 +109,13 @@ class Graph(GraphMixin):
 
 # /michelson/history
 class HistoryTable(HistoryTableMixin):
-    model = RequestM
-    template_name = 'components/history-table-m.html'
-    context_object_name = 'array_of_reqs'
+    column_names = column_names
+    model = PresetM
     form = GraphForm
 
 
 # /michelson/preset
 class PresetsTable(PresetsTableMixin):
+    column_names = column_names
     model = PresetM
-    template_name = 'components/presets-table-m.html'
-    context_object_name = 'presets'
     form = GraphForm
