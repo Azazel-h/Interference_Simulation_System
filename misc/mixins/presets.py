@@ -7,6 +7,10 @@ from django.views.generic import ListView
 
 
 class PresetsTableMixin(LoginRequiredMixin, ListView):
+    context_object_name = 'presets'
+    template_name = 'components/presets-table.html'
+
+    column_names = None
     form = None
     object_list = None
 
@@ -20,6 +24,8 @@ class PresetsTableMixin(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs) -> TemplateResponse:
         context = self.get_context_data()
         context[self.context_object_name] = self.model.objects.filter(user=request.user.uid).order_by('-id')
+        context['column_names'] = self.column_names
+        context['form_fields'] = list(self.form.declared_fields)
 
         return self.render_to_response(context)
 

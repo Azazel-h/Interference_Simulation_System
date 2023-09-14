@@ -1,43 +1,27 @@
-function autoFill(num, source) {
-    const source_tr = document.getElementById(source).children[1].children[num - 1];
-    const id_and_value = [
-        ["id_wave_length", "wave-length-" + num],
-        ["id_glasses_distance", "glasses-dist-" + num],
-        ["id_focal_distance", "focal-distance-" + num],
-        ["id_stroke_difference", "stroke-difference-" + num],
-        ["id_reflectivity", "reflectivity-" + num],
-        ["id_refractive_index", "refractive-index-" + num],
-        ["id_picture_size", "picture-size-" + num],
-        ["id_N", "n-" + num]
-    ]
+function fillValues(obj_names, row_id, form_fields, table) {
+    let i = 0;
 
-    fillValues(source_tr, id_and_value);
-}
+    while (i < obj_names.length) {
+        if (obj_names[i] === "id" || obj_names[i] === "user" || obj_names[i] === "request_time") {
+            obj_names.splice(i, 1);
+            i--;
+        }
 
-function autoFillM(num, source) {
-    const source_tr = document.getElementById(source).children[1].children[num - 1];
-    const id_and_value = [
-        ["id_wave_length", "wavelength-" + num],
-        ["id_z1", "z1-" + num],
-        ["id_z2", "z2-" + num],
-        ["id_Rbs", "Rbs-" + num],
-        ["id_tx", "tx-" + num],
-        ["id_ty", "ty-" + num],
-        ["id_f", "f-" + num],
-        ["id_picture_size", "size-" + num],
-        ["id_N", "n-" + num]
-    ]
+        i++;
+    }
 
-    fillValues(source_tr, id_and_value);
-}
+    const source_tr = document.getElementById(table).children[1].children[row_id - 1];
 
-function fillValues(source_tr, id_and_value) {
-    for (let i in id_and_value) {
-        document.getElementById(id_and_value[i][0]).value = source_tr.children[id_and_value[i][1]].innerText;
+    for (let i = 0; i < form_fields.length; i++) {
+        let form_elem_id = "id_" + form_fields[i];
+        let source_id = obj_names[i] + "-" + row_id;
+        let form_elem = document.getElementById(form_elem_id);
+        let next_form_elem = form_elem.nextElementSibling;
 
-        let next_elem = document.getElementById(id_and_value[i][0]).nextElementSibling
-        if (next_elem && next_elem.hasAttribute("id") && next_elem.getAttribute("id") === id_and_value[i][0]) {
-            next_elem.value = source_tr.children[id_and_value[i][1]].innerText;
+        form_elem.value = source_tr.children[source_id].innerText;
+
+        if (next_form_elem && next_form_elem.hasAttribute("id") && next_form_elem.getAttribute("id") === form_elem_id) {
+            next_form_elem.value = source_tr.children[source_id].innerText;
         }
     }
 }

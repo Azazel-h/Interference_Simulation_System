@@ -11,9 +11,7 @@ SECRET_KEY = secret_key_generator.generate()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(
-    DEBUG=(bool, True),
-)
+env = environ.Env(DEBUG=(bool, True), )
 environ.Env.read_env(str(BASE_DIR / '.env'))
 
 # Quick-start development settings - unsuitable for production
@@ -87,6 +85,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'paginator_tags': 'templates.tags.paginator_tags',
+                'list_tags': 'templates.tags.list_tags',
+                'attribute_tags': 'templates.tags.attribute_tags',
+            },
         },
     },
 ]

@@ -1,0 +1,7 @@
+[style]
+based_on_style=pep8
+blank_line_before_nested_class_or_def=False
+column_limit=120
+dedent_closing_brackets=True
+force_multiline_dict=True
+split_complex_comprehension=True
