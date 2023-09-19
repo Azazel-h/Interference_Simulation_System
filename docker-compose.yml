@@ -26,6 +26,8 @@ services:
              nginx -g 'daemon off;'"
     profiles:
       - prod
+    depends_on:
+      - django-prod
 
   django-prod:
     build:
@@ -45,6 +47,8 @@ services:
              python3 /app/manage.py runserver 0.0.0.0:${DJANGO_PORT}"
     profiles:
       - prod
+    depends_on:
+      - redis
 
   django-debug:
     build:
@@ -63,3 +67,5 @@ services:
              python3 /app/manage.py runserver 0.0.0.0:${DJANGO_PORT}"
     profiles:
       - debug
+    depends_on:
+      - redis
