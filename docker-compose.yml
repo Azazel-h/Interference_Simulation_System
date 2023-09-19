@@ -34,7 +34,7 @@ services:
       context: .
     container_name: django-prod
     volumes:
-      - ..:/app
+      - .:/app
     expose:
       - "${DJANGO_PORT}"
     environment:
