@@ -12,7 +12,12 @@ SECRET_KEY = secret_key_generator.generate()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
-    DEBUG=(bool, True),
+    COMPOSE_PROFILES=(str, 'debug'),
+    DJANGO_PORT=(int, 8000),
+    WEB_DOMAIN=(str, '127.0.0.1'),
+    NGINX_PORT=(int, 8020),
+    LDAP_USERNAME=(str, ''),
+    LDAP_PASSWORD=(str, ''),
 )
 environ.Env.read_env(str(BASE_DIR / '.env'))
 
