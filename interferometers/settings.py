@@ -11,14 +11,21 @@ SECRET_KEY = secret_key_generator.generate()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(DEBUG=(bool, True), )
+env = environ.Env(
+    COMPOSE_PROFILES=(str, 'debug'),
+    DJANGO_PORT=(int, 8000),
+    WEB_DOMAIN=(str, '127.0.0.1'),
+    NGINX_PORT=(int, 8020),
+    LDAP_USERNAME=(str, ''),
+    LDAP_PASSWORD=(str, ''),
+)
 environ.Env.read_env(str(BASE_DIR / '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env('COMPOSE_PROFILES') == 'debug'
 
 if DEBUG:
     ALLOWED_HOSTS = [
