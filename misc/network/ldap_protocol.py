@@ -36,7 +36,9 @@ class LDAPConnection:
             self.connection.set_option(ldap.OPT_X_TLS, ldap.OPT_X_TLS_DEMAND)
             self.connection.set_option(ldap.OPT_X_TLS_DEMAND, True)
             self.connection.set_option(ldap.OPT_DEBUG_LEVEL, 255)
-            self.connection.start_tls_s()
+
+            if not self.connection.get_option(ldap.OPT_X_TLS):
+                self.connection.start_tls_s()
             self.connection.simple_bind_s(self.bind_dn, self.bind_password)
         except (ldap.LDAPError, ldap.SERVER_DOWN) as error:
             self.connection = None
