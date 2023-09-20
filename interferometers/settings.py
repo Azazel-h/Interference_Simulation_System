@@ -4,8 +4,6 @@ import environ
 import redis
 from secret_key_generator import secret_key_generator
 
-from misc.network.ldap_protocol import LDAPConnection
-
 SECRET_KEY = secret_key_generator.generate()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -165,27 +163,8 @@ CAS_VERSION = '3'
 
 # LDAP config
 
-# Login credentials
 LDAP_USERNAME = env('LDAP_USERNAME')
 LDAP_PASSWORD = env('LDAP_PASSWORD')
-
-# Employee LDAP
-EMPLOYEE_LDAP = LDAPConnection(
-    'Employee',
-    'ldaps://mail.bmstu.ru:636',
-    f'{LDAP_USERNAME}@bmstu.ru',
-    LDAP_PASSWORD,
-    'cn=bmstu.ru',
-)
-
-# Student LDAP
-STUDENT_LDAP = LDAPConnection(
-    'Student',
-    'ldaps://mailstudent.bmstu.ru:636',
-    f'{LDAP_USERNAME}@mailstudent.bmstu.ru',
-    LDAP_PASSWORD,
-    'cn=student.bmstu.ru',
-)
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

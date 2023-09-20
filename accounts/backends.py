@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from django.conf import settings
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.http import HttpRequest
@@ -39,18 +39,19 @@ class AuthBackend(CASBackend):
         user_ldap_info = None
         is_staff = True
 
-        for ln in ('EMPLOYEE', 'STUDENT'):
-            ldap_con = settings.__getattr__(f'{ln}_LDAP')
+        ldap_conns = apps.get_app_config('accounts').ldap_connections
 
-            if user_ldap_info is None:
-                logging.debug(f'Searching in {ldap_con.name} server')
-                data = ldap_con.search(username)
+        if ldap_conns:
+            for ldap_conn in ldap_conns:
+                if user_ldap_info is None:
+                    logging.debug(f'Searching in {ldap_conn.name} server')
+                    data = ldap_conn.search(username)
 
-                if data:
-                    user_ldap_info = data[0][1]
-                    user_ldap_info['is_staff'] = is_staff
+                    if data:
+                        user_ldap_info = data[0][1]
+                        user_ldap_info['is_staff'] = is_staff
 
-                is_staff = False
+                    is_staff = False
 
         user_kwargs = {
             'uid': username,
