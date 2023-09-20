@@ -28,14 +28,22 @@ class LDAPConnection:
         logging.debug(f'Initializing {self.name} LDAP server')
 
         try:
+            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+            ldap.set_option(ldap.OPT_X_TLS_CACERTFILE, '/ca-certificates.crt')
             self.connection = ldap.initialize(self.server_uri)
-            self.connection.set_option(ldap.OPT_X_TLS_CACERTFILE, '/ca-certificates.crt')
-            self.connection.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
+
+            self.connection.set_option(ldap.OPT_REFERRALS, 0)
+            self.connection.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
+            self.connection.set_option(ldap.OPT_X_TLS, ldap.OPT_X_TLS_DEMAND)
+            self.connection.set_option(ldap.OPT_X_TLS_DEMAND, True)
+
             self.connection.start_tls_s()
             self.connection.simple_bind_s(self.bind_dn, self.bind_password)
         except (ldap.LDAPError, ldap.SERVER_DOWN) as error:
             self.connection = None
             logging.error(f'Failed to init {self.name} LDAP connection. Error: {error}')
+        except Exception as ex:
+            logging.error(ex)
 
     def search(self, username: str) -> Optional[dict]:
         if self.connection:
