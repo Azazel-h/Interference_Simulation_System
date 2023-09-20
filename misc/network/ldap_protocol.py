@@ -30,7 +30,7 @@ class LDAPConnection:
         try:
             self.connection = ldap.initialize(self.server_uri)
             self.connection.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_DEMAND)
-            self.connection.set_option(ldap.OPT_X_TLS_CACERTFILE, '/ca-certificates.crt')
+            self.connection.set_option(ldap.OPT_X_TLS_CACERTFILE, 'ca-certificates.crt')
 
             self.connection.set_option(ldap.OPT_REFERRALS, 0)
             self.connection.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
