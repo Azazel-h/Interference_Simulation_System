@@ -28,8 +28,9 @@ class LDAPConnection:
         logging.debug(f'Initializing {self.name} LDAP server')
 
         try:
-            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
             self.connection = ldap.initialize(self.server_uri)
+            self.connection.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_DEMAND)
+            self.connection.set_option(ldap.OPT_X_TLS_CACERTFILE, '/ca-certificates.crt')
 
             self.connection.set_option(ldap.OPT_REFERRALS, 0)
             self.connection.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
@@ -37,8 +38,9 @@ class LDAPConnection:
             self.connection.set_option(ldap.OPT_X_TLS_DEMAND, True)
             self.connection.set_option(ldap.OPT_DEBUG_LEVEL, 255)
 
-            if not self.connection.get_option(ldap.OPT_X_TLS):
-                self.connection.start_tls_s()
+            # if not self.connection.get_option(ldap.OPT_X_TLS):
+            #     self.connection.start_tls_s()
+            self.connection.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
             self.connection.simple_bind_s(self.bind_dn, self.bind_password)
         except (ldap.LDAPError, ldap.SERVER_DOWN) as error:
             self.connection = None
