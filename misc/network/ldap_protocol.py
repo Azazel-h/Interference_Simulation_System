@@ -45,8 +45,6 @@ class LDAPConnection:
         except (ldap.LDAPError, ldap.SERVER_DOWN) as error:
             self.connection = None
             logging.error(f'Failed to init {self.name} LDAP connection. Error: {error}')
-        except Exception as ex:
-            logging.error(ex)
 
     def search(self, username: str) -> Optional[dict]:
         if self.connection:
