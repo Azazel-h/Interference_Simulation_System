@@ -28,6 +28,7 @@ class LDAPConnection:
         logging.debug(f'Initializing {self.name} LDAP server')
 
         try:
+            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
             self.connection = ldap.initialize(self.server_uri)
 
             self.connection.set_option(ldap.OPT_REFERRALS, 0)
@@ -35,8 +36,6 @@ class LDAPConnection:
             self.connection.set_option(ldap.OPT_X_TLS, ldap.OPT_X_TLS_DEMAND)
             self.connection.set_option(ldap.OPT_X_TLS_DEMAND, True)
             self.connection.set_option(ldap.OPT_DEBUG_LEVEL, 255)
-            # This must be the last tls setting to create TLS context.
-            self.connection.set_option(ldap.OPT_X_TLS_NEWCTX, ldap.OPT_ON)
 
             # if not self.connection.get_option(ldap.OPT_X_TLS):
             #     self.connection.start_tls_s()
