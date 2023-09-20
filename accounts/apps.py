@@ -1,8 +1,6 @@
 from django.apps import AppConfig
 from django.conf import settings
 
-from misc.network.ldap_protocol import LDAPConnection
-
 
 class AccountsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -10,6 +8,8 @@ class AccountsConfig(AppConfig):
     name = 'accounts'
 
     def ready(self):
+        from accounts.backends import LDAPConnection
+
         self.ldap_connections = (
             # Employee LDAP
             LDAPConnection(
