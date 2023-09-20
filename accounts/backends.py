@@ -36,7 +36,7 @@ class LDAPConnection:
 
         try:
             self.connection = ldap.initialize(self.server_uri)
-            self.connection.simple_bind(self.bind_dn, self.bind_password)
+            self.connection.simple_bind_s(self.bind_dn, self.bind_password)
         except (ldap.LDAPError, ldap.SERVER_DOWN) as error:
             self.connection = None
             logging.error(f'Failed to init {self.name} LDAP connection. Error: {error}')
