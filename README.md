@@ -1,7 +1,7 @@
 # Interference_Simulation_System
 
 ### Как развернуть приложение:
-1. Поставить `docker` и `docker-compose` по инструкции из официальной документации
+1. Поставить `docker` и `docker compose` по инструкции из официальной документации
 2. Задать требуемые параметры в .env
 ```
 # Debug/Production mode
