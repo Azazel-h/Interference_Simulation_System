@@ -2,7 +2,7 @@ import math
 
 import numpy as np
 import plotly.express as px
-import sepl_light_lib as sll
+import selph_light_lib as sll
 from LightPipes import Begin, Intensity
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
@@ -12,6 +12,17 @@ from misc.mixins.history import HistoryTableMixin
 from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
 from .models import RequestFP, PresetFP
+
+column_names = (
+    "Длина волны",
+    "Расстояние между стеклами",
+    "Фокусное расстояние линзы",
+    "Разница хода",
+    "Коэффициент отражения",
+    "Коэффициент преломления",
+    "Размер рисунка",
+    "Разрешение",
+)
 
 
 # /fabry-perot
@@ -30,7 +41,7 @@ class IndexPage(TemplateView):
         return self.render_to_response(context)
 
 
-# /fabry-perot/update_graph
+# /fabry-perot/graph
 class Graph(GraphMixin):
     form = GraphForm
 
@@ -79,22 +90,26 @@ class Graph(GraphMixin):
         fig = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
         fig.update_yaxes(fixedrange=True)
 
-        config = {'displaylogo': False, 'toImageButtonOptions': {'height': None, 'width': None}}
+        config = {
+            'displaylogo': False,
+            'toImageButtonOptions': {
+                'height': None,
+                'width': None
+            }
+        }
 
         return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
 
 
-# /fabry-perot/update_history
+# /fabry-perot/history
 class HistoryTable(HistoryTableMixin):
-    model = RequestFP
-    template_name = 'components/history-table.html'
-    context_object_name = 'array_of_reqs'
+    column_names = column_names
     form = GraphForm
+    model = RequestFP
 
 
-# /fabry-perot/update_preset
+# /fabry-perot/preset
 class PresetsTable(PresetsTableMixin):
+    column_names = column_names
     model = PresetFP
-    template_name = 'components/presets-table.html'
-    context_object_name = 'presets'
     form = GraphForm

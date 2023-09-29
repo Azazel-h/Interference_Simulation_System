@@ -4,15 +4,18 @@ import environ
 import redis
 from secret_key_generator import secret_key_generator
 
-from misc.network.ldap_protocol import LDAPConnection
-
 SECRET_KEY = secret_key_generator.generate()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
-    DEBUG=(bool, True),
+    COMPOSE_PROFILES=(str, 'debug'),
+    DJANGO_PORT=(int, 8000),
+    WEB_DOMAIN=(str, '127.0.0.1'),
+    NGINX_PORT=(int, 8020),
+    LDAP_USERNAME=(str, ''),
+    LDAP_PASSWORD=(str, ''),
 )
 environ.Env.read_env(str(BASE_DIR / '.env'))
 
@@ -20,7 +23,7 @@ environ.Env.read_env(str(BASE_DIR / '.env'))
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env('COMPOSE_PROFILES') == 'debug'
 
 if DEBUG:
     ALLOWED_HOSTS = [
@@ -87,6 +90,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'paginator_tags': 'templates.tags.paginator_tags',
+                'list_tags': 'templates.tags.list_tags',
+                'attribute_tags': 'templates.tags.attribute_tags',
+            },
         },
     },
 ]
@@ -155,27 +163,8 @@ CAS_VERSION = '3'
 
 # LDAP config
 
-# Login credentials
 LDAP_USERNAME = env('LDAP_USERNAME')
 LDAP_PASSWORD = env('LDAP_PASSWORD')
-
-# Employee LDAP
-EMPLOYEE_LDAP = LDAPConnection(
-    'Employee',
-    'ldaps://mail.bmstu.ru:636',
-    f'{LDAP_USERNAME}@bmstu.ru',
-    LDAP_PASSWORD,
-    'cn=bmstu.ru',
-)
-
-# Student LDAP
-STUDENT_LDAP = LDAPConnection(
-    'Student',
-    'ldaps://mailstudent.bmstu.ru:636',
-    f'{LDAP_USERNAME}@mailstudent.bmstu.ru',
-    LDAP_PASSWORD,
-    'cn=student.bmstu.ru',
-)
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

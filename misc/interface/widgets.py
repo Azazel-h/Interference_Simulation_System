@@ -7,5 +7,8 @@ class RangeInput(TextInput):
 
     def __init__(self, min_value, max_value, step):
         super().__init__()
-        self.attrs = {'min': min_value, 'max': max_value, 'step': step}
-
+        self.attrs = {
+            'min': min_value,
+            'max': max_value,
+            'step': step
+        }

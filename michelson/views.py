@@ -1,5 +1,5 @@
 import plotly.express as px
-import sepl_light_lib as sll
+import selph_light_lib as sll
 from LightPipes import *
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
@@ -9,6 +9,18 @@ from misc.mixins.history import HistoryTableMixin
 from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
 from .models import RequestM, PresetM
+
+column_names = (
+    "Длина волны",
+    "Длина 1 плеча",
+    "Длина 2 плеча",
+    "Отражаемость разделителя луча",
+    "Наклон зеркала по X",
+    "Наклон зеркала по Y",
+    "фокусное расстояние",
+    "Размер рисунка",
+    "Разрешение",
+)
 
 
 # /michelson
@@ -27,7 +39,7 @@ class IndexPage(TemplateView):
         return self.render_to_response(context)
 
 
-# /michelson/update_graph
+# /michelson/graph
 class Graph(GraphMixin):
     form = GraphForm
 
@@ -84,23 +96,26 @@ class Graph(GraphMixin):
         fig = px.imshow(I, color_continuous_scale=['#000000', laser_color])
         fig.update_yaxes(fixedrange=True)
 
-        config = {'displaylogo': False, 'toImageButtonOptions': {'height': None, 'width': None}}
+        config = {
+            'displaylogo': False,
+            'toImageButtonOptions': {
+                'height': None,
+                'width': None
+            }
+        }
 
         return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
 
 
-# /michelson/update_history
+# /michelson/history
 class HistoryTable(HistoryTableMixin):
+    column_names = column_names
     model = RequestM
-    template_name = 'components/history-table-m.html'
-    context_object_name = 'array_of_reqs'
     form = GraphForm
 
 
-# /michelson/update_preset
+# /michelson/preset
 class PresetsTable(PresetsTableMixin):
+    column_names = column_names
     model = PresetM
-    template_name = 'components/presets-table-m.html'
-    context_object_name = 'presets'
     form = GraphForm
-

@@ -1,39 +1,80 @@
 {% load tz %}
+{% load attribute_tags %}
+{% load list_tags %}
+{% load paginator_tags %}
 
 <div class="container">
-    {% if array_of_reqs|length > 0 %}
+    {% if page_obj|length > 0 %}
+        {% apply_meth_on_list_elems page_obj.0|get_attr:"_meta"|get_attr:"fields" "__getattribute__" "name" as obj_names %}
         <table id="history-table" class="table">
             <thead>
-            <tr>
-                <th scope="col"></th>
-                <th scope="col">Длина волны</th>
-                <th scope="col">Расстояние между стеклами</th>
-                <th scope="col">Фокусное расстояние линзы</th>
-                <th scope="col">Разница хода</th>
-                <th scope="col">Коэффициент отражения</th>
-                <th scope="col">Коэффициент преломления</th>
-                <th scope="col">Размер рисунка</th>
-                <th scope="col">Разрешение</th>
-            </tr>
+                <tr>
+                    <th scope="col"></th>
+                    {% for column_name in column_names %}
+                        <th scope="col">{{ column_name }}</th>
+                    {% endfor %}
+                </tr>
             </thead>
             <tbody>
-                {% for req in array_of_reqs %}
+                {% for req in page_obj %}
                     <tr>
-                        <th scope="row">
-                            <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="autoFill({{ forloop.counter }}, 'history-table')" title="{% timezone "Europe/Moscow" %}{{ req.request_time|date:"Y-m-d" }}{% endtimezone %}">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
-                        </th>
-                        <td id="wave-length-{{ forloop.counter }}">{{ req.wave_length }}</td>
-                        <td id="glasses-dist-{{ forloop.counter }}">{{ req.glasses_distance }}</td>
-                        <td id="focal-distance-{{ forloop.counter }}">{{ req.focal_distance }}</td>
-                        <td id="stroke-difference-{{ forloop.counter }}">{{ req.stroke_difference }}</td>
-                        <td id="reflectivity-{{ forloop.counter }}">{{ req.reflectivity }}</td>
-                        <td id="refractive-index-{{ forloop.counter }}">{{ req.refractive_index }}</td>
-                        <td id="picture-size-{{ forloop.counter }}">{{ req.picture_size }}</td>
-                        <td id="n-{{ forloop.counter }}">{{ req.N }}</td>
+                        {% with forloop.counter as obj_id %}
+                            <th scope="row">
+                                <button type="button" class="btn btn-outline-success btn-sm btn-block" onclick="fillValues({{ obj_names }}, {{ obj_id }}, {{ form_fields }}, 'history-table')" title="{% timezone "Europe/Moscow" %}{{ req.request_time|date:"Y-m-d" }}{% endtimezone %}">{% timezone "Europe/Moscow" %}{{ req.request_time|time:"H:i" }}{% endtimezone %}</button>
+                            </th>
+                            {% for obj_name in obj_names %}
+                                {% if obj_name != "id" and obj_name != "user" and obj_name != "request_time" %}
+                                    <td id="{{ obj_name }}-{{ obj_id }}">{{ req|get_attr:obj_name }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if is_paginated %}
+            {% if page_obj.has_other_pages %}
+                <ul class="pagination justify-content-center" style="margin:20px 0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <input class="page-link" type="submit" value="«" onclick="getHistoryPage('{{ csrf_token }}', {{ page_obj.number|add:"-1" }})">
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <input class="page-link" type="submit" value="«">
+                        </li>
+                    {% endif %}
+                    {% get_proper_elided_page_range paginator page_obj.number 1 1 as page_range %}
+                    {% for i in page_range %}
+                        {% if page_obj.number == i %}
+                            <li class="page-item active">
+                                <input class="page-link" type="submit" value="{{ i }}" onclick="getHistoryPage('{{ csrf_token }}', {{ i }})">
+                            </li>
+                        {% else %}
+                            {% if i == paginator.ELLIPSIS %}
+                                <li class="page-item">
+                                    <span class="page-link">{{ paginator.ELLIPSIS }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <input class="page-link" type="submit" value="{{ i }}" onclick="getHistoryPage('{{ csrf_token }}', {{ i }})">
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <input class="page-link" type="submit" value="»" onclick="getHistoryPage('{{ csrf_token }}', {{ page_obj.number|add:"1" }})">
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <input class="page-link" type="submit" value="»">
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        {% endif %}
     {% else %}
         <strong>Вы пока не сделали ни одного запроса</strong>
     {% endif %}

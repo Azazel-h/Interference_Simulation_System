@@ -4,7 +4,7 @@ from django.urls import reverse
 
 class TestPage(TestCase):
     def assert_updates_graph(self, data, code, content=None):
-        url = reverse('index') + 'update-graph/'
+        url = reverse('index') + 'graph/'
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, code)
         if content:
@@ -12,7 +12,7 @@ class TestPage(TestCase):
 
     def assert_saves_preset(self, data, code, content=None):
         data["preset_operation"] = "save_preset"
-        url = reverse('index') + 'update-preset/'
+        url = reverse('index') + 'preset/'
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, code)
         if content:
@@ -23,14 +23,14 @@ class TestPage(TestCase):
             "delete_preset": preset_id,
             "preset_operation": "delete_preset"
         }
-        url = reverse('index') + 'update-preset/'
+        url = reverse('index') + 'preset/'
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, code)
         if content:
             self.assertContains(response, content)
 
     def assert_update_history(self, data, code, content=None):
-        url = reverse('index') + 'update-history/'
+        url = reverse('index') + 'history/'
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, code)
         if content:
@@ -58,7 +58,6 @@ class TestPage(TestCase):
         url = reverse('index')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'pages/fabry-perot.html')
 
     def test_interferometer_generation(self):
         request_data = self.get_data()
@@ -87,12 +86,12 @@ class TestPage(TestCase):
         request_data = self.get_data(picture_size=-1)
         self.assert_updates_graph(request_data, 200, b'None')
 
-    def test_interferometer_generation_with_wrong_N(self):
+    def test_interferometer_generation_with_wrong_n(self):
         request_data = self.get_data(N=-1)
         self.assert_updates_graph(request_data, 200, b'None')
 
         # N more than 4000
-        request_data = self.get_data(N=4001)
+        request_data = self.get_data(N=1001)
         self.assert_updates_graph(request_data, 200, b'None')
 
     def test_interferometer_generation_with_wrong_reflectivity(self):
