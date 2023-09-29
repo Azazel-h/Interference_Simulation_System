@@ -44,7 +44,7 @@ services:
              python3 /app/manage.py makemigrations accounts fabry_perot michelson &&
              python3 /app/manage.py migrate &&
              python3 /app/manage.py collectstatic --no-input &&
-             python3 /app/manage.py runserver 0.0.0.0:${DJANGO_PORT}"
+             python3 /app/manage.py runserver --noreload 0.0.0.0:${DJANGO_PORT}"
     profiles:
       - prod
     depends_on:
@@ -64,7 +64,7 @@ services:
       sh -c "python3 -m pip install -r /app/requirements.txt &&
              python3 /app/manage.py makemigrations accounts fabry_perot michelson &&
              python3 /app/manage.py migrate &&
-             python3 /app/manage.py runserver 0.0.0.0:${DJANGO_PORT}"
+             python3 /app/manage.py runserver --noreload 0.0.0.0:${DJANGO_PORT}"
     profiles:
       - debug
     depends_on:

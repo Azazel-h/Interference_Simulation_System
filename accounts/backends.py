@@ -1,13 +1,57 @@
 import logging
 from typing import Optional
 
-from django.conf import settings
+import ldap
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django_cas_ng.backends import CASBackend
 from django_cas_ng.signals import cas_user_authenticated
 from django_cas_ng.utils import get_cas_client
+
+
+class LDAPConnection:
+    def __init__(
+        self,
+        name: str,
+        server_uri: str = None,
+        bind_dn: str = None,
+        bind_password: str = None,
+        search_base: str = None
+    ) -> None:
+        self.name = name
+        self.server_uri = server_uri
+        self.bind_dn = bind_dn
+        self.bind_password = bind_password
+        self.search_base = search_base
+
+        self.connection = None
+
+        if all((self.server_uri, self.bind_dn, self.bind_password)):
+            self.init_ldap_server()
+
+    def init_ldap_server(self) -> None:
+        logging.debug(f'Initializing {self.name} LDAP server')
+
+        try:
+            self.connection = ldap.initialize(self.server_uri)
+            self.connection.simple_bind_s(self.bind_dn, self.bind_password)
+        except (ldap.LDAPError, ldap.SERVER_DOWN) as error:
+            self.connection = None
+            logging.error(f'Failed to init {self.name} LDAP connection. Error: {error}')
+
+    def search(self, username: str) -> Optional[dict]:
+        if self.connection:
+            try:
+                logging.debug(f'Searching for `{username}` user')
+                return self.connection.search_s(self.search_base, ldap.SCOPE_SUBTREE, f'(uid={username})')
+            except ldap.SERVER_DOWN:
+                logging.warning('LDAP connection refused. Reconnecting...')
+                self.init_ldap_server()
+                self.search(username)
+        else:
+            logging.warning(f'{self.name} LDAP server isn\'t initialized')
 
 
 class AuthBackend(CASBackend):
@@ -39,18 +83,19 @@ class AuthBackend(CASBackend):
         user_ldap_info = None
         is_staff = True
 
-        for ln in ('EMPLOYEE', 'STUDENT'):
-            ldap_con = settings.__getattr__(f'{ln}_LDAP')
+        ldap_conns = apps.get_app_config('accounts').ldap_connections
 
-            if user_ldap_info is None:
-                logging.debug(f'Searching in {ldap_con.name} server')
-                data = ldap_con.search(username)
+        if ldap_conns:
+            for ldap_conn in ldap_conns:
+                if user_ldap_info is None:
+                    logging.debug(f'Searching in {ldap_conn.name} server')
+                    data = ldap_conn.search(username)
 
-                if data:
-                    user_ldap_info = data[0][1]
-                    user_ldap_info['is_staff'] = is_staff
+                    if data:
+                        user_ldap_info = data[0][1]
+                        user_ldap_info['is_staff'] = is_staff
 
-                is_staff = False
+                    is_staff = False
 
         user_kwargs = {
             'uid': username,
