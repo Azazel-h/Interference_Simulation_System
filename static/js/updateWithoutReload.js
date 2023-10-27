@@ -68,13 +68,6 @@ function getReport(is_authorized, csrftoken) {
         xhrFields: {
             responseType: 'blob'
         },
-        beforeSend: function () {
-            $("#graph").html(
-                "<svg class=\"spinner\" viewBox=\"0 0 50 50\">" +
-                "    <circle class=\"path\" cx=\"25\" cy=\"25\" r=\"20\" fill=\"none\" stroke-width=\"5\"></circle>" +
-                "</svg>"
-            );
-        },
         success: function (data) {
             const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
             const url = window.URL.createObjectURL(blob);
@@ -85,10 +78,9 @@ function getReport(is_authorized, csrftoken) {
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
-            $("#graph").empty();
         },
         error: function (jqXHR, exception) {
-            $("#graph").html(processError(jqXHR, exception));
+            alert(processError(jqXHR, exception));
         }
     });
 }
