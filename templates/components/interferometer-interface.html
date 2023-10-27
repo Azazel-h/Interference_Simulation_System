@@ -18,6 +18,7 @@
                     <div class="mt-4 text-center">
                         {% if user.is_authenticated %}
                             <input type="submit" value="Посмотреть кольца" class="btn btn-success" onclick="updateGraph(true, '{{ csrf_token }}')">
+                            <input type="submit" value="DOCX" class="btn btn-success" onclick="getReport(true, '{{ csrf_token }}')">
                             {% if presets|length < 5 %}
                                 <input type="submit" id="save_preset" value="Сохранить данные" class="btn btn-success" onclick="savePreset('{{ csrf_token }}')">
                             {% else %}

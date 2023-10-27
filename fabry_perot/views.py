@@ -5,9 +5,12 @@ import plotly.express as px
 import selph_light_lib as sll
 from LightPipes import Begin, Intensity
 from django.template.response import TemplateResponse
+from django.views import View
 from django.views.generic import TemplateView
+from plotly.graph_objs import Figure
 
 from misc.mixins.graph import GraphMixin
+from misc.mixins.graph_report import GraphReportMixin
 from misc.mixins.history import HistoryTableMixin
 from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
@@ -41,20 +44,21 @@ class IndexPage(TemplateView):
         return self.render_to_response(context)
 
 
-# /fabry-perot/graph
-class Graph(GraphMixin):
-    form = GraphForm
+class Graph:
+    form_dict = {}
 
-    @staticmethod
-    def get_graph(form_dict: dict) -> str:
-        wave_length = form_dict['wave_length'] * sll.nm
-        glasses_distance = form_dict['glasses_distance'] * sll.mm
-        focal_distance = form_dict['focal_distance'] * sll.mm
-        stroke_difference = form_dict['stroke_difference'] * sll.nm
-        reflectivity = form_dict['reflectivity']
-        refractive_index = form_dict['refractive_index']
-        picture_size = form_dict['picture_size'] * sll.mm
-        n = form_dict['N']
+    def __init__(self, form_dict):
+        self.form_dict = form_dict
+
+    def create_figure(self) -> Figure:
+        wave_length = self.form_dict['wave_length'] * sll.nm
+        glasses_distance = self.form_dict['glasses_distance'] * sll.mm
+        focal_distance = self.form_dict['focal_distance'] * sll.mm
+        stroke_difference = self.form_dict['stroke_difference'] * sll.nm
+        reflectivity = self.form_dict['reflectivity']
+        refractive_index = self.form_dict['refractive_index']
+        picture_size = self.form_dict['picture_size'] * sll.mm
+        n = self.form_dict['N']
 
         f = Begin(picture_size, wave_length, n)
         intensity = Intensity(f)
@@ -90,15 +94,27 @@ class Graph(GraphMixin):
         fig = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
         fig.update_yaxes(fixedrange=True)
 
-        config = {
-            'displaylogo': False,
-            'toImageButtonOptions': {
-                'height': None,
-                'width': None
-            }
-        }
+        return fig
 
-        return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
+
+# /fabry-perot/graph
+class ShowGraph(GraphMixin):
+    form = GraphForm
+
+    @staticmethod
+    def get_graph(form_dict: dict) -> Figure:
+        new_graph = Graph(form_dict=form_dict)
+        return new_graph.create_figure()
+
+
+# /fabry-perot/graph-report
+class GraphReport(GraphReportMixin):
+    form = GraphForm
+
+    @staticmethod
+    def get_graph(form_dict: dict) -> Figure:
+        new_graph = Graph(form_dict=form_dict)
+        return new_graph.create_figure()
 
 
 # /fabry-perot/history

@@ -12,3 +12,5 @@ python-ldap===3.4.3
 redis==5.0.0
 secret-key-generator==0.0.8
 selph-light-lib==0.0.5
+python-docx==1.0.1
+kaleido==0.2.1

@@ -51,132 +51,167 @@ function updateGraph(is_authorized, csrftoken) {
     }
 }
 
-function savePreset(csrftoken) {
+function getReport(is_authorized, csrftoken) {
     let request_data = getFormFields();
-    request_data["preset_operation"] = "save_preset";
 
-    if (preset_request && preset_request.readyState !== 4) {
-        preset_request.abort();
+    if (graph_request && graph_request.readyState !== 4) {
+        graph_request.abort();
     }
 
-    preset_request = $.ajax({
-        url: current_url + "preset/",
+    graph_request = $.ajax({
+        url: current_url + "graph-report/",
         type: "POST",
         headers: {
             "X-CSRFToken": csrftoken
         },
         data: request_data,
-        success: function (response) {
-            $("#presets").html(response);
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (data) {
+            const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "filename.docx";
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        },
+        error: function (jqXHR, exception) {
+            alert(processError(jqXHR, exception));
+        }
+    });
+}
 
-            let save_preset_element = document.getElementById("save_preset");
-            if (!save_preset_element.disabled && response.split("<tr>").length - 2 >= 5) {
-                save_preset_element.disabled = true;
+
+    function savePreset(csrftoken) {
+        let request_data = getFormFields();
+        request_data["preset_operation"] = "save_preset";
+
+        if (preset_request && preset_request.readyState !== 4) {
+            preset_request.abort();
+        }
+
+        preset_request = $.ajax({
+            url: current_url + "preset/",
+            type: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            data: request_data,
+            success: function (response) {
+                $("#presets").html(response);
+
+                let save_preset_element = document.getElementById("save_preset");
+                if (!save_preset_element.disabled && response.split("<tr>").length - 2 >= 5) {
+                    save_preset_element.disabled = true;
+                }
             }
-        }
-    });
-}
-
-function deletePreset(id, csrftoken) {
-    if (preset_request && preset_request.readyState !== 4) {
-        preset_request.abort();
+        });
     }
 
-    preset_request = $.ajax({
-        url: current_url + "preset/",
-        type: "POST",
-        headers: {
-            "X-CSRFToken": csrftoken
-        },
-        data: {
-            "delete_preset": id,
-            "preset_operation": "delete_preset"
-        },
-        success: function (response) {
-            $("#presets").html(response);
+    function deletePreset(id, csrftoken) {
+        if (preset_request && preset_request.readyState !== 4) {
+            preset_request.abort();
+        }
 
-            let save_preset_element = document.getElementById("save_preset");
-            if (save_preset_element.disabled) {
-                save_preset_element.disabled = false;
+        preset_request = $.ajax({
+            url: current_url + "preset/",
+            type: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            data: {
+                "delete_preset": id,
+                "preset_operation": "delete_preset"
+            },
+            success: function (response) {
+                $("#presets").html(response);
+
+                let save_preset_element = document.getElementById("save_preset");
+                if (save_preset_element.disabled) {
+                    save_preset_element.disabled = false;
+                }
             }
-        }
-    });
-}
-
-function updateHistory(csrftoken) {
-    let request_data = getFormFields();
-
-    if (history_request && history_request.readyState !== 4) {
-        history_request.abort();
+        });
     }
 
-    history_request = $.ajax({
-        url: current_url + "history/",
-        type: "POST",
-        headers: {
-            "X-CSRFToken": csrftoken
-        },
-        data: Object.assign({}, request_data, {"page": cur_history_page}),
-        success: function (response) {
-            $("#history").html(response);
+    function updateHistory(csrftoken) {
+        let request_data = getFormFields();
+
+        if (history_request && history_request.readyState !== 4) {
+            history_request.abort();
         }
-    });
-}
 
-function getHistoryPage(csrftoken, page) {
-    cur_history_page = page;
-
-    if (history_request && history_request.readyState !== 4) {
-        history_request.abort();
+        history_request = $.ajax({
+            url: current_url + "history/",
+            type: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            data: Object.assign({}, request_data, {"page": cur_history_page}),
+            success: function (response) {
+                $("#history").html(response);
+            }
+        });
     }
 
-    history_request = $.ajax({
-        url: current_url + "history",
-        data: {
-            page: cur_history_page
-        },
-        type: "GET",
-        headers: {
-            "X-CSRFToken": csrftoken
-        },
-        success: function (response) {
-            $("#history").html(response);
+    function getHistoryPage(csrftoken, page) {
+        cur_history_page = page;
+
+        if (history_request && history_request.readyState !== 4) {
+            history_request.abort();
         }
-    });
-}
 
-function getFormFields() {
-    let request_data = {};
-
-    $("#interferometer input").each(function (_, value) {
-        if (value.hasAttribute("type") && value.getAttribute("type") === "number") {
-            request_data[value.id.slice(3)] = value.value;
-        }
-    });
-
-    return request_data;
-}
-
-function processError(jqXHR, exception) {
-    let message;
-
-    if (exception === "abort") {
-        message = "Запрос прерван";
-    } else if (exception === "parsererror") {
-        message = "Ошибка чтения ответа сервера";
-    } else if (exception === "timeout") {
-        message = "Превышено время ожидания";
-    } else if (jqXHR.status === 0) {
-        message = "Не удалось выполнить запрос";
-    } else if (jqXHR.status === 404) {
-        message = 'Запрашиваемая страница не найдена';
-    } else if (jqXHR.status === 500) {
-        message = "Ошибка сервера";
-    } else {
-        message = "Неизвестная ошибка";
+        history_request = $.ajax({
+            url: current_url + "history",
+            data: {
+                page: cur_history_page
+            },
+            type: "GET",
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            success: function (response) {
+                $("#history").html(response);
+            }
+        });
     }
 
-    return "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
-        "    <p>" + message + "</p>" +
-        "</div>"
-}
+    function getFormFields() {
+        let request_data = {};
+
+        $("#interferometer input").each(function (_, value) {
+            if (value.hasAttribute("type") && value.getAttribute("type") === "number") {
+                request_data[value.id.slice(3)] = value.value;
+            }
+        });
+
+        return request_data;
+    }
+
+    function processError(jqXHR, exception) {
+        let message;
+
+        if (exception === "abort") {
+            message = "Запрос прерван";
+        } else if (exception === "parsererror") {
+            message = "Ошибка чтения ответа сервера";
+        } else if (exception === "timeout") {
+            message = "Превышено время ожидания";
+        } else if (jqXHR.status === 0) {
+            message = "Не удалось выполнить запрос";
+        } else if (jqXHR.status === 404) {
+            message = 'Запрашиваемая страница не найдена';
+        } else if (jqXHR.status === 500) {
+            message = "Ошибка сервера";
+        } else {
+            message = "Неизвестная ошибка";
+        }
+
+        return "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
+            "    <p>" + message + "</p>" +
+            "</div>"
+    }
