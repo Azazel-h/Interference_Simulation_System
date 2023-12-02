@@ -1,6 +1,8 @@
 import math
+from typing import Set
 
 import numpy as np
+import pandas as pd
 import plotly.express as px
 import selph_light_lib as sll
 from LightPipes import Begin, Intensity
@@ -46,7 +48,7 @@ class Graph(GraphMixin):
     form = GraphForm
 
     @staticmethod
-    def get_graph(form_dict: dict) -> str:
+    def get_graph(form_dict: dict) -> set[str]:
         wave_length = form_dict['wave_length'] * sll.nm
         glasses_distance = form_dict['glasses_distance'] * sll.mm
         focal_distance = form_dict['focal_distance'] * sll.mm
@@ -65,6 +67,9 @@ class Graph(GraphMixin):
         step = picture_size / resolution / sll.mm
         matrix_center = (resolution + 1) // 2
 
+        theta_array = []
+        first_beam = []
+        second_beam = []
         for i in range(0, matrix_center):
             x_ray = (i + 0.5) * step
             for j in range(i, matrix_center):
@@ -72,25 +77,61 @@ class Graph(GraphMixin):
 
                 x = x_ray * sll.mm - picture_size / 2
                 y = y_ray * sll.mm - picture_size / 2
-
                 radius = math.sqrt(x * x + y * y)
-                theta = radius / focal_distance
+
+                theta = math.atan2(radius, focal_distance)
 
                 phase_diff = wavenumber * 2 * refractive_index * glasses_distance * math.cos(theta)
-                light_intensity = 1 / (1 + fineness * math.pow(math.sin(phase_diff / 2), 2))
+                first_light_intensity = 1 / (1 + fineness * math.pow(math.sin(phase_diff / 2), 2))
 
                 phase_diff = second_wavenumber * 2 * refractive_index * glasses_distance * math.cos(theta)
-                light_intensity += 1 / (1 + fineness * math.pow(math.sin(phase_diff / 2), 2))
+                second_light_intensity = first_light_intensity + (
+                        1 / (1 + fineness * math.pow(math.sin(phase_diff / 2), 2)))
 
-                intensity[i][j] = intensity[j][i] = round(light_intensity, 6)
+                intensity[i][j] = intensity[j][i] = second_light_intensity
 
+                if i == j:
+                    first_beam.append(first_light_intensity)
+                    second_beam.append(second_light_intensity)
+                    theta_array.append(theta)
 
-        intensity[resolution - matrix_center:resolution, 0:matrix_center] = np.rot90(intensity[0:matrix_center, 0:matrix_center])
-        intensity[0:resolution, resolution - matrix_center:resolution] = np.rot90(intensity[0:resolution, 0:matrix_center], 2)
+        # TODO: Вывести все это в интерфейс
+        dispersion_region = math.pow(wave_length + wave_length_diff, 2) / (2 * glasses_distance)
+
+        # print(theta_array, first_beam, second_beam)
+
+        intensity[resolution - matrix_center:resolution, 0:matrix_center] = np.rot90(
+            intensity[0:matrix_center, 0:matrix_center])
+        intensity[0:resolution, resolution - matrix_center:resolution] = np.rot90(
+            intensity[0:resolution, 0:matrix_center], 2)
         intensity = (intensity - np.min(intensity)) / (np.max(intensity) - np.min(intensity))
         laser_color = sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))
+
         fig = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
         fig.update_yaxes(fixedrange=True)
+
+        df = pd.DataFrame(
+            dict(
+                x=theta_array,
+                y=second_beam,
+                color=laser_color
+            )
+        )
+
+        # TODO: Разобраться с отрисовкой subplots и вывести два графика
+        fig2 = px.line(df, x="x", y="y", labels={'y': 'Интенсивность', 'x': 'Угол падения'})
+        fig2.update_traces(line_color=laser_color)
+        fig2.update_layout(
+            plot_bgcolor='white'
+        )
+        fig2.update_xaxes(
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        fig2.update_yaxes(
+            linecolor='black',
+            gridcolor='lightgrey',
+        )
 
         config = {
             'displaylogo': False,
@@ -100,7 +141,8 @@ class Graph(GraphMixin):
             }
         }
 
-        return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
+        return {fig2.to_html(config=config, include_plotlyjs=False, full_html=False),
+                fig.to_html(config=config, include_plotlyjs=False, full_html=False)}
 
 
 # /fabry-perot/history
