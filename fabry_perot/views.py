@@ -142,7 +142,8 @@ class Graph(GraphMixin):
         }
 
         return {fig2.to_html(config=config, include_plotlyjs=False, full_html=False),
-                fig.to_html(config=config, include_plotlyjs=False, full_html=False)}
+                fig.to_html(config=config, include_plotlyjs=False, full_html=False),
+                f"<span>Область дисперсии: {dispersion_region}</span>"}
 
 
 # /fabry-perot/history
