@@ -1,6 +1,7 @@
 import plotly.express as px
 import selph_light_lib as sll
 from LightPipes import *
+from django.apps import apps
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
@@ -9,18 +10,6 @@ from misc.mixins.history import HistoryTableMixin
 from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
 from .models import RequestM, PresetM
-
-column_names = (
-    "Длина волны",
-    "Длина 1 плеча",
-    "Длина 2 плеча",
-    "Отражаемость разделителя луча",
-    "Наклон зеркала по X",
-    "Наклон зеркала по Y",
-    "фокусное расстояние",
-    "Размер рисунка",
-    "Разрешение",
-)
 
 
 # /michelson
@@ -109,13 +98,13 @@ class Graph(GraphMixin):
 
 # /michelson/history
 class HistoryTable(HistoryTableMixin):
-    column_names = column_names
+    column_names = apps.get_app_config('michelson').column_names
     model = RequestM
     form = GraphForm
 
 
 # /michelson/preset
 class PresetsTable(PresetsTableMixin):
-    column_names = column_names
+    column_names = apps.get_app_config('michelson').column_names
     model = PresetM
     form = GraphForm
