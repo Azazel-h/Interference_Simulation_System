@@ -60,7 +60,7 @@ class TestPage(TestCase):
         self.client = Client()
 
     def test_index_page(self):
-        url = reverse('index')
+        url = reverse('fp-index')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
