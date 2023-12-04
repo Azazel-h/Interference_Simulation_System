@@ -38,7 +38,9 @@ function updateGraph(is_authorized, csrftoken) {
                     "</div>"
                 );
             } else {
-                $("#graph").html(response);
+                for (const [key, value] of Object.entries(response)) {
+                    $("#" + key).html(value);
+                }
             }
         },
         error: function (jqXHR, exception) {

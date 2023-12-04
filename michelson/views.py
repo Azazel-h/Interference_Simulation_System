@@ -1,3 +1,5 @@
+from typing import Optional, Union
+
 import plotly.express as px
 import selph_light_lib as sll
 from LightPipes import *
@@ -44,7 +46,7 @@ class Graph(GraphMixin):
     form = GraphForm
 
     @staticmethod
-    def get_graph(form_dict: dict) -> str:
+    def get_graph(form_dict: dict) -> Optional[dict[str, Union[str, tuple[str, ...]]]]:
         R = 3 * sll.mm
         z3 = 3 * sll.cm
         z4 = 5 * sll.cm
@@ -104,7 +106,9 @@ class Graph(GraphMixin):
             }
         }
 
-        return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
+        return {
+            "graph": fig.to_html(config=config, include_plotlyjs=False, full_html=False)
+        }
 
 
 # /michelson/history

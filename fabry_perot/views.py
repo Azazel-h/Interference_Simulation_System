@@ -48,7 +48,7 @@ class Graph(GraphMixin):
     form = GraphForm
 
     @staticmethod
-    def get_graph(form_dict: dict) -> Optional[Union[str, tuple[str, ...]]]:
+    def get_graph(form_dict: dict) -> Optional[dict[str, Union[str, tuple[str, ...]]]]:
         wave_length = form_dict['wave_length'] * sll.nm
         glasses_distance = form_dict['glasses_distance'] * sll.mm
         focal_distance = form_dict['focal_distance'] * sll.mm
@@ -96,7 +96,7 @@ class Graph(GraphMixin):
                     theta_array.append(theta)
 
         # TODO: Вывести все это в интерфейс
-        # dispersion_region = math.pow(wave_length + wave_length_diff, 2) / (2 * glasses_distance)
+        dispersion_region = math.pow(wave_length + wave_length_diff, 2) / (2 * glasses_distance)
 
         # print(theta_array, first_beam, second_beam)
 
@@ -141,10 +141,13 @@ class Graph(GraphMixin):
             }
         }
 
-        return (
-            fig_1.to_html(config=config, include_plotlyjs=False, full_html=False),
-            fig_2.to_html(config=config, include_plotlyjs=False, full_html=False),
-        )
+        return {
+            'graph': (
+                fig_1.to_html(config=config, include_plotlyjs=False, full_html=False),
+                fig_2.to_html(config=config, include_plotlyjs=False, full_html=False),
+            ),
+            'additional': f'<span>Область дисперсии: {dispersion_region}</span>'
+        }
 
 
 # /fabry-perot/history
