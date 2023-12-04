@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from django.http import HttpResponse
 from django.views import View
@@ -18,5 +18,5 @@ class GraphMixin(View):
         return HttpResponse(graph)
 
     @staticmethod
-    def get_graph(form_dict: dict) -> Optional[str]:
+    def get_graph(form_dict: dict) -> Optional[Union[str, tuple[str, ...]]]:
         return None
