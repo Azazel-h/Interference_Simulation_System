@@ -31,7 +31,7 @@ function updateGraph(is_authorized, csrftoken) {
             );
         },
         success: function (response) {
-            if (response === "None") {
+            if (response === null) {
                 $("#graph").html(
                     "<div class=\"alert alert-warning text-center\" role=\"alert\">" +
                     "    <p>Не удалось сгенерировать график</p>" +
