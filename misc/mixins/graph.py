@@ -15,7 +15,7 @@ class GraphMixin(View):
             form_dict = dict(form.cleaned_data)
             graph = self.get_graph(form_dict)
 
-        return JsonResponse(graph)
+        return JsonResponse(graph, safe=False)
 
     @staticmethod
     def get_graph(form_dict: dict) -> Optional[dict[str, Union[str, tuple[str, ...]]]]:
