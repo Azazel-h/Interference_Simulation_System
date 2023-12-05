@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 import selph_light_lib as sll
 from LightPipes import Begin, Intensity
+from django.apps import apps
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
@@ -14,17 +15,6 @@ from misc.mixins.history import HistoryTableMixin
 from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
 from .models import RequestFP, PresetFP
-
-column_names = (
-    "Длина волны",
-    "Расстояние между стеклами",
-    "Фокусное расстояние линзы",
-    "Разница хода",
-    "Коэффициент отражения",
-    "Коэффициент преломления",
-    "Размер рисунка",
-    "Разрешение",
-)
 
 
 # /fabry-perot
@@ -152,13 +142,13 @@ class Graph(GraphMixin):
 
 # /fabry-perot/history
 class HistoryTable(HistoryTableMixin):
-    column_names = column_names
+    column_names = apps.get_app_config('fabry_perot').column_names
     form = GraphForm
     model = RequestFP
 
 
 # /fabry-perot/preset
 class PresetsTable(PresetsTableMixin):
-    column_names = column_names
+    column_names = apps.get_app_config('fabry_perot').column_names
     model = PresetFP
     form = GraphForm
