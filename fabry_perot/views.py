@@ -137,7 +137,10 @@ class Graph(GraphMixin):
                 fig_1.to_html(config=config, include_plotlyjs=False, full_html=False),
                 fig_2.to_html(config=config, include_plotlyjs=False, full_html=False),
             ),
-            'additional': f'<span>Область дисперсии: ' + '{:.6f}'.format(dispersion_region) + ' нм</span>'
+            'additional':
+                '<div class="mt-4 card card-body">'
+                f'    Область дисперсии: ' + '{:.6f}'.format(dispersion_region) + ' нм'
+                '</div>'
         }
 
 
