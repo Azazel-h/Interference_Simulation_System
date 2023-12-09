@@ -86,8 +86,7 @@ class Graph(GraphMixin):
                     second_beam.append(second_light_intensity)
                     distance_array.append(radius / sll.mm)
 
-        dispersion_region = math.pow(wave_length + wave_length_diff, 2) / (2 * glasses_distance)
-
+        dispersion_region = math.pow(wave_length, 2) / (2 * glasses_distance) / sll.nm
         intensity[resolution - matrix_center:resolution, 0:matrix_center] = np.rot90(
             intensity[0:matrix_center, 0:matrix_center])
         intensity[0:resolution, resolution - matrix_center:resolution] = np.rot90(
