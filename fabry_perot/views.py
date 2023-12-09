@@ -54,19 +54,20 @@ class Graph(GraphMixin):
         second_wavenumber = 2 * math.pi / (wave_length + wave_length_diff)
         fineness = 4.0 * reflection_coefficient / math.pow((1.0 - reflection_coefficient), 2)
 
-        step = picture_size / resolution / sll.mm
+        step = picture_size / resolution
         matrix_center = (resolution + 1) // 2
 
-        theta_array = []
+        distance_array = []
         first_beam = []
         second_beam = []
+
         for i in range(0, matrix_center):
             x_ray = (i + 0.5) * step
             for j in range(i, matrix_center):
                 y_ray = (j + 0.5) * step
 
-                x = x_ray * sll.mm - picture_size / 2
-                y = y_ray * sll.mm - picture_size / 2
+                x = x_ray - picture_size / 2
+                y = y_ray - picture_size / 2
                 radius = math.sqrt(x * x + y * y)
 
                 theta = math.atan2(radius, focal_distance)
@@ -83,12 +84,9 @@ class Graph(GraphMixin):
                 if i == j:
                     first_beam.append(first_light_intensity)
                     second_beam.append(second_light_intensity)
-                    theta_array.append(theta)
+                    distance_array.append(radius / sll.mm)
 
-        # TODO: Вывести все это в интерфейс
         dispersion_region = math.pow(wave_length + wave_length_diff, 2) / (2 * glasses_distance)
-
-        # print(theta_array, first_beam, second_beam)
 
         intensity[resolution - matrix_center:resolution, 0:matrix_center] = np.rot90(
             intensity[0:matrix_center, 0:matrix_center])
@@ -101,15 +99,17 @@ class Graph(GraphMixin):
         fig_1 = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
         fig_1.update_yaxes(fixedrange=True)
 
+        print(len(distance_array))
+
         df = pd.DataFrame(
             dict(
-                x=theta_array,
+                x=distance_array,
                 y=second_beam,
                 color=laser_color
             )
         )
 
-        fig_2 = px.line(df, x="x", y="y", labels={'y': 'Интенсивность', 'x': 'Угол падения'})
+        fig_2 = px.line(df, x="x", y="y", labels={'x': 'Расстояние [мм]', 'y': 'Интенсивность'})
         fig_2.update_traces(line_color=laser_color)
         fig_2.update_layout(
             plot_bgcolor='white'
