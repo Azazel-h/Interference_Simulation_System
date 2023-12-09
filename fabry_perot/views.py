@@ -87,6 +87,7 @@ class Graph(GraphMixin):
                     distance_array.append(radius / sll.mm)
 
         dispersion_region = math.pow(wave_length, 2) / (2 * glasses_distance) / sll.nm
+
         intensity[resolution - matrix_center:resolution, 0:matrix_center] = np.rot90(
             intensity[0:matrix_center, 0:matrix_center])
         intensity[0:resolution, resolution - matrix_center:resolution] = np.rot90(
@@ -100,8 +101,6 @@ class Graph(GraphMixin):
 
         fig_1 = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
         fig_1.update_yaxes(fixedrange=True)
-
-        print(len(distance_array))
 
         df = pd.DataFrame(
             dict(
@@ -138,7 +137,7 @@ class Graph(GraphMixin):
                 fig_1.to_html(config=config, include_plotlyjs=False, full_html=False),
                 fig_2.to_html(config=config, include_plotlyjs=False, full_html=False),
             ),
-            'additional': f'<span>Область дисперсии: {dispersion_region}</span>'
+            'additional': f'<span>Область дисперсии: ' + '{:.6f}'.format(dispersion_region) + ' нм</span>'
         }
 
 
