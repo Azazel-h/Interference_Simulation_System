@@ -58,7 +58,7 @@ class Graph(GraphMixin):
         matrix_center = (resolution + 1) // 2
 
         distance_array = []
-        first_beam = []
+        # first_beam = []
         second_beam = []
 
         for i in range(0, matrix_center):
@@ -82,7 +82,7 @@ class Graph(GraphMixin):
                 intensity[i][j] = intensity[j][i] = second_light_intensity
 
                 if i == j:
-                    first_beam.append(first_light_intensity)
+                    # first_beam.append(first_light_intensity)
                     second_beam.append(second_light_intensity)
                     distance_array.append(radius / sll.mm)
 
@@ -92,7 +92,10 @@ class Graph(GraphMixin):
             intensity[0:matrix_center, 0:matrix_center])
         intensity[0:resolution, resolution - matrix_center:resolution] = np.rot90(
             intensity[0:resolution, 0:matrix_center], 2)
+
         intensity = (intensity - np.min(intensity)) / (np.max(intensity) - np.min(intensity))
+        second_beam = [(beam_intensity - min(second_beam)) / (max(second_beam) - min(second_beam)) for beam_intensity in
+                       second_beam]
 
         laser_color = sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))
 
