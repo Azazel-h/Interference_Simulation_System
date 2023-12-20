@@ -1,9 +1,12 @@
 import math
+from typing import Optional, Union
 
 import numpy as np
+import pandas as pd
 import plotly.express as px
 import selph_light_lib as sll
 from LightPipes import Begin, Intensity
+from django.apps import apps
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
@@ -12,17 +15,6 @@ from misc.mixins.history import HistoryTableMixin
 from misc.mixins.presets import PresetsTableMixin
 from .forms import GraphForm
 from .models import RequestFP, PresetFP
-
-column_names = (
-    "Длина волны",
-    "Расстояние между стеклами",
-    "Фокусное расстояние линзы",
-    "Разница хода",
-    "Коэффициент отражения",
-    "Коэффициент преломления",
-    "Размер рисунка",
-    "Разрешение",
-)
 
 
 # /fabry-perot
@@ -46,49 +38,91 @@ class Graph(GraphMixin):
     form = GraphForm
 
     @staticmethod
-    def get_graph(form_dict: dict) -> str:
+    def get_graph(form_dict: dict) -> Optional[dict[str, Union[str, tuple[str, ...]]]]:
         wave_length = form_dict['wave_length'] * sll.nm
         glasses_distance = form_dict['glasses_distance'] * sll.mm
         focal_distance = form_dict['focal_distance'] * sll.mm
-        stroke_difference = form_dict['stroke_difference'] * sll.nm
-        reflectivity = form_dict['reflectivity']
+        wave_length_diff = form_dict['wave_length_diff'] * sll.nm
+        reflection_coefficient = form_dict['reflection_coefficient']
         refractive_index = form_dict['refractive_index']
         picture_size = form_dict['picture_size'] * sll.mm
-        n = form_dict['N']
+        resolution = form_dict['N']
 
-        f = Begin(picture_size, wave_length, n)
+        f = Begin(picture_size, wave_length, resolution)
         intensity = Intensity(f)
-        k = 2 * math.pi / wave_length
-        second_k = 2 * math.pi / (wave_length + stroke_difference)
-        fineness = 4.0 * reflectivity / (1.0 - reflectivity)
+        wavenumber = 2 * math.pi / wave_length
+        second_wavenumber = 2 * math.pi / (wave_length + wave_length_diff)
+        fineness = 4.0 * reflection_coefficient / math.pow((1.0 - reflection_coefficient), 2)
 
-        step = picture_size / n / sll.mm
-        matrix_center = (n + 1) // 2
+        step = picture_size / resolution
+        matrix_center = (resolution + 1) // 2
+
+        distance_array = []
+        # first_beam = []
+        second_beam = []
 
         for i in range(0, matrix_center):
             x_ray = (i + 0.5) * step
             for j in range(i, matrix_center):
                 y_ray = (j + 0.5) * step
 
-                x = x_ray * sll.mm - picture_size / 2
-                y = y_ray * sll.mm - picture_size / 2
-
+                x = x_ray - picture_size / 2
+                y = y_ray - picture_size / 2
                 radius = math.sqrt(x * x + y * y)
-                theta = radius / focal_distance
 
-                delta = k * refractive_index * glasses_distance * math.cos(theta)
-                light_intensity = 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
-                delta = second_k * refractive_index * glasses_distance * math.cos(theta)
-                light_intensity += 0.5 / (1 + fineness * math.pow(math.sin(delta), 2))
+                theta = math.atan2(radius, focal_distance)
 
-                intensity[i][j] = intensity[j][i] = round(light_intensity, 6)
+                phase_diff = wavenumber * 2 * refractive_index * glasses_distance * math.cos(theta)
+                first_light_intensity = 1 / (1 + fineness * math.pow(math.sin(phase_diff / 2), 2))
 
-        intensity[n - matrix_center:n, 0:matrix_center] = np.rot90(intensity[0:matrix_center, 0:matrix_center])
-        intensity[0:n, n - matrix_center:n] = np.rot90(intensity[0:n, 0:matrix_center], 2)
+                phase_diff = second_wavenumber * 2 * refractive_index * glasses_distance * math.cos(theta)
+                second_light_intensity = first_light_intensity + (
+                        1 / (1 + fineness * math.pow(math.sin(phase_diff / 2), 2)))
+
+                intensity[i][j] = intensity[j][i] = second_light_intensity
+
+                if i == j:
+                    # first_beam.append(first_light_intensity)
+                    second_beam.append(second_light_intensity)
+                    distance_array.append(radius / sll.mm)
+
+        dispersion_region = math.pow(wave_length, 2) / (2 * glasses_distance) / sll.nm
+
+        intensity[resolution - matrix_center:resolution, 0:matrix_center] = np.rot90(
+            intensity[0:matrix_center, 0:matrix_center])
+        intensity[0:resolution, resolution - matrix_center:resolution] = np.rot90(
+            intensity[0:resolution, 0:matrix_center], 2)
+
+        intensity = (intensity - np.min(intensity)) / (np.max(intensity) - np.min(intensity))
+        second_beam = [(beam_intensity - min(second_beam)) / (max(second_beam) - min(second_beam)) for beam_intensity in
+                       second_beam]
 
         laser_color = sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))
-        fig = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
-        fig.update_yaxes(fixedrange=True)
+
+        fig_1 = px.imshow(intensity, color_continuous_scale=['#000000', laser_color])
+        fig_1.update_yaxes(fixedrange=True)
+
+        df = pd.DataFrame(
+            dict(
+                x=distance_array,
+                y=second_beam,
+                color=laser_color
+            )
+        )
+
+        fig_2 = px.line(df, x="x", y="y", labels={'x': 'Расстояние [мм]', 'y': 'Интенсивность'})
+        fig_2.update_traces(line_color=laser_color)
+        fig_2.update_layout(
+            plot_bgcolor='white'
+        )
+        fig_2.update_xaxes(
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        fig_2.update_yaxes(
+            linecolor='black',
+            gridcolor='lightgrey',
+        )
 
         config = {
             'displaylogo': False,
@@ -98,18 +132,27 @@ class Graph(GraphMixin):
             }
         }
 
-        return fig.to_html(config=config, include_plotlyjs=False, full_html=False)
+        return {
+            'graph': (
+                fig_1.to_html(config=config, include_plotlyjs=False, full_html=False),
+                fig_2.to_html(config=config, include_plotlyjs=False, full_html=False),
+            ),
+            'additional':
+                '<div class="mt-4 card card-body">'
+                f'    Область дисперсии: ' + '{:.6f}'.format(dispersion_region) + ' нм'
+                '</div>'
+        }
 
 
 # /fabry-perot/history
 class HistoryTable(HistoryTableMixin):
-    column_names = column_names
+    column_names = apps.get_app_config('fabry_perot').column_names
     form = GraphForm
     model = RequestFP
 
 
 # /fabry-perot/preset
 class PresetsTable(PresetsTableMixin):
-    column_names = column_names
+    column_names = apps.get_app_config('fabry_perot').column_names
     model = PresetFP
     form = GraphForm

@@ -7,3 +7,5 @@ RUN apt-get update && apt-get -y install gettext-base libsasl2-dev python3-dev l
 
 WORKDIR /app
 COPY . /app
+
+RUN python3 -m pip install -r /app/requirements.txt

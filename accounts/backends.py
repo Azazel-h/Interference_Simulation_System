@@ -36,6 +36,7 @@ class LDAPConnection:
 
         try:
             self.connection = ldap.initialize(self.server_uri)
+            self.connection.set_option(ldap.OPT_NETWORK_TIMEOUT, 3)
             self.connection.simple_bind_s(self.bind_dn, self.bind_password)
         except (ldap.LDAPError, ldap.SERVER_DOWN) as error:
             self.connection = None
