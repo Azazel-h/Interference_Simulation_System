@@ -12,7 +12,12 @@ class GraphForm(forms.Form):
         initial=630,
         widget=RangeInput(min_value=380, max_value=780, step=0.1)
     )
-    wave_length_diff = forms.FloatField(label='Разница длин волн \\(\\Delta\\lambda\\) [нм]', min_value=0, step_size=0.001, initial=0)
+    wave_length_diff = forms.FloatField(
+        label='Разница длин волн \\(\\Delta\\lambda\\) [нм]',
+        min_value=0,
+        step_size=0.000001,
+        initial=0
+    )
     glasses_distance = forms.FloatField(
         label='Расстояние между зеркалами \\(d\\) [мм]',
         min_value=0,

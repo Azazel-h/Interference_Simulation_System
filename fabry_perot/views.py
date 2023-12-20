@@ -54,19 +54,20 @@ class Graph(GraphMixin):
         second_wavenumber = 2 * math.pi / (wave_length + wave_length_diff)
         fineness = 4.0 * reflection_coefficient / math.pow((1.0 - reflection_coefficient), 2)
 
-        step = picture_size / resolution / sll.mm
+        step = picture_size / resolution
         matrix_center = (resolution + 1) // 2
 
-        theta_array = []
-        first_beam = []
+        distance_array = []
+        # first_beam = []
         second_beam = []
+
         for i in range(0, matrix_center):
             x_ray = (i + 0.5) * step
             for j in range(i, matrix_center):
                 y_ray = (j + 0.5) * step
 
-                x = x_ray * sll.mm - picture_size / 2
-                y = y_ray * sll.mm - picture_size / 2
+                x = x_ray - picture_size / 2
+                y = y_ray - picture_size / 2
                 radius = math.sqrt(x * x + y * y)
 
                 theta = math.atan2(radius, focal_distance)
@@ -81,20 +82,20 @@ class Graph(GraphMixin):
                 intensity[i][j] = intensity[j][i] = second_light_intensity
 
                 if i == j:
-                    first_beam.append(first_light_intensity)
+                    # first_beam.append(first_light_intensity)
                     second_beam.append(second_light_intensity)
-                    theta_array.append(theta)
+                    distance_array.append(radius / sll.mm)
 
-        # TODO: Вывести все это в интерфейс
-        dispersion_region = math.pow(wave_length + wave_length_diff, 2) / (2 * glasses_distance)
-
-        # print(theta_array, first_beam, second_beam)
+        dispersion_region = math.pow(wave_length, 2) / (2 * glasses_distance) / sll.nm
 
         intensity[resolution - matrix_center:resolution, 0:matrix_center] = np.rot90(
             intensity[0:matrix_center, 0:matrix_center])
         intensity[0:resolution, resolution - matrix_center:resolution] = np.rot90(
             intensity[0:resolution, 0:matrix_center], 2)
+
         intensity = (intensity - np.min(intensity)) / (np.max(intensity) - np.min(intensity))
+        second_beam = [(beam_intensity - min(second_beam)) / (max(second_beam) - min(second_beam)) for beam_intensity in
+                       second_beam]
 
         laser_color = sll.color.rgb_to_hex(sll.wave.wave_length_to_rgb(wave_length / sll.nm))
 
@@ -103,13 +104,13 @@ class Graph(GraphMixin):
 
         df = pd.DataFrame(
             dict(
-                x=theta_array,
+                x=distance_array,
                 y=second_beam,
                 color=laser_color
             )
         )
 
-        fig_2 = px.line(df, x="x", y="y", labels={'y': 'Интенсивность', 'x': 'Угол падения'})
+        fig_2 = px.line(df, x="x", y="y", labels={'x': 'Расстояние [мм]', 'y': 'Интенсивность'})
         fig_2.update_traces(line_color=laser_color)
         fig_2.update_layout(
             plot_bgcolor='white'
@@ -136,7 +137,10 @@ class Graph(GraphMixin):
                 fig_1.to_html(config=config, include_plotlyjs=False, full_html=False),
                 fig_2.to_html(config=config, include_plotlyjs=False, full_html=False),
             ),
-            'additional': f'<span>Область дисперсии: {dispersion_region}</span>'
+            'additional':
+                '<div class="mt-4 card card-body">'
+                f'    Область дисперсии: ' + '{:.6f}'.format(dispersion_region) + ' нм'
+                '</div>'
         }
 
 
