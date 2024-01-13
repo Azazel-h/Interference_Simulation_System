@@ -1,0 +1,478 @@
+@font-face {
+    font-family: "SF Pro Display";
+    src: url(../fonts/SF-Pro-Display-Bold.ttf);
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+    outline: none;
+    font-family: "SF Pro Display", Arial;
+}
+html {
+    height: 101%;
+    font-family: "SF Pro Display";
+    font-size: 10px;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+ol,
+ul {
+    list-style: none;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: "";
+    content: none;
+}
+strong {
+    font-weight: bold;
+}
+
+input {
+    outline: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+img {
+    border: 0;
+    max-width: 100%;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+.container {
+    max-width: 1170px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem;
+}
+
+.header {
+    background: #1e1e1e;
+    padding: 2rem 0;
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 2rem;
+    font-family: "SF Pro Display";
+    text-transform: uppercase;
+    line-height: 2.4rem;
+    color: rgba(255, 255, 255, 0.5);
+
+    .authentication {
+        color: #ffffff;
+        display: flex;
+        font-family: "SF Pro Display";
+        .log-in {
+            margin-right: 8rem;
+        }
+    }
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.main {
+    margin-top: 4.5rem;
+    font-size: 2.5rem;
+    color: #000000;
+    .main-content {
+        display: flex;
+        .options {
+            h2 {
+                font-size: 2rem;
+                color: rgba(0, 0, 0, 0.4);
+                text-transform: uppercase;
+                line-height: 2.4rem;
+                font-style: normal;
+                font-weight: 700;
+                margin-bottom: 2rem;
+            }
+            .visual {
+                margin-top: 7.5rem;
+                h3 {
+                    font-size: 2rem;
+                    color: rgba(0, 0, 0, 0.4);
+                    text-transform: uppercase;
+                    line-height: 2.4rem;
+                    font-style: normal;
+                    font-weight: 700;
+                    margin-bottom: 2rem;
+                }
+            }
+        }
+        .manager {
+            margin-top: 7.5rem;
+            color: #ffffff;
+            h3 {
+                font-size: 2rem;
+                color: rgba(0, 0, 0, 0.4);
+                text-transform: uppercase;
+                line-height: 2.4rem;
+                font-style: normal;
+                font-weight: 700;
+                margin-bottom: 2rem;
+            }
+            .button {
+                font-style: normal;
+                font-weight: 700;
+                font-size: 2.5rem;
+                line-height: 3rem;
+                padding: 0.9rem 2rem;
+                border-radius: 1rem;
+                filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.2));
+            }
+
+            .button:not(:last-child) {
+                margin-right: 2.7rem;
+            }
+
+            .graph-go {
+                background: #00a843;
+                color: #ffffff;
+            }
+            .graph-stop {
+                background: #e83535;
+                color: #ffffff;
+            }
+            .graph-reset {
+                color: #000000;
+                background: #d9d9d9;
+            }
+        }
+        .graph {
+            order: 1;
+            height: 100%;
+            width: 100%;
+            h2 {
+                font-size: 2rem;
+                color: rgba(0, 0, 0, 0.4);
+                text-transform: uppercase;
+                line-height: 2.4rem;
+                font-style: normal;
+                font-weight: 700;
+            }
+            .img {
+                margin-top: 2rem;
+                border: 0.1rem solid black;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+}
+
+.parameter-item {
+    h4 {
+        min-width: 20rem;
+    }
+}
+
+.amplitude {
+    margin-top: 1rem;
+}
+
+input,
+output {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 1em;
+    font-family: Arial, sans-serif;
+}
+
+output {
+    background: #393939;
+    border-radius: 3px;
+    color: #fff;
+}
+
+input[type="number"] {
+    width: 6rem;
+    padding: 0.5rem 2rem 0.5rem 0.7rem;
+    border-radius: 3px;
+    border: none;
+    background: #e4e4e4;
+}
+
+input[type="range"] {
+    margin-left: 1.5rem;
+    -webkit-appearance: none;
+    margin-right: 15px;
+    width: 30rem;
+    height: 0.4rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+    background-image: linear-gradient(#393939, #393939);
+}
+
+/* Input Thumb */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #393939;
+    cursor: ew-resize;
+    box-shadow: 0 0 2px 0 #555;
+    transition: background 0.3s ease-in-out;
+}
+
+input[type="range"]::-moz-range-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #393939;
+    cursor: ew-resize;
+    box-shadow: 0 0 2px 0 #555;
+    transition: background 0.3s ease-in-out;
+}
+
+input[type="range"]::-ms-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #393939;
+    cursor: ew-resize;
+    box-shadow: 0 0 2px 0 #555;
+    transition: background 0.3s ease-in-out;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #393939;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    background: #393939;
+}
+
+input[type="range"]::-ms-thumb:hover {
+    background: #393939;
+}
+
+/* Input Track */
+input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+}
+
+input[type="range"]::-moz-range-track {
+    -webkit-appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+}
+
+input[type="range"]::-ms-track {
+    -webkit-appearance: none;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin-left: -5rem;
+    padding-left: -5rem;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+@media screen and (max-width: 1170px) {
+    .container {
+        padding: 0 1rem;
+    }
+    .main-content {
+        flex-direction: column;
+    }
+    .graph {
+        margin-top: 2rem;
+    }
+    .parameter-item {
+        justify-content: center;
+    }
+    h2,
+    h3 {
+        text-align: center;
+    }
+    .buttons {
+        display: block;
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 440px) {
+    .navigation {
+        flex-direction: column;
+        align-items: center;
+    }
+    .authentication {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .log-in {
+        margin-bottom: 2rem;
+        margin-left: 8rem;
+    }
+    .buttons {
+        display: flex;
+        flex-direction: column;
+    }
+    .button{
+        margin-top: 2rem;
+        margin-right: 0;
+        margin-left: 2.7rem;
+    }
+    .graph-reset {
+        margin-right: 2.7rem;
+    }
+    .parameter-item {
+        input {
+            margin-top: 2rem;
+        }
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    h4 {
+        text-align: center;
+    }
+}
